@@ -20,7 +20,7 @@ import sys
 import numpy
 from utils import *
 
-class RestrictedBoltzmannMachine(object):
+class RBM(object):
     def __init__(self, input=None, n_visible=2, n_hidden=3, \
         W=None, hbias=None, vbias=None, numpy_rng=None):
         
@@ -53,7 +53,7 @@ class RestrictedBoltzmannMachine(object):
         self.hbias = hbias
         self.vbias = vbias
 
-        self.params = [self.W, self.hbias, self.vbias]
+        # self.params = [self.W, self.hbias, self.vbias]
 
 
     def contrastive_divergence(self, lr=0.1, k=1):
@@ -77,8 +77,8 @@ class RestrictedBoltzmannMachine(object):
         self.vbias += lr * numpy.mean(self.input - nv_samples, axis=1)
 
 
-        cost = self.get_reconstruction_cross_entropy()
-        return cost
+        # cost = self.get_reconstruction_cross_entropy()
+        # return cost
 
 
     def sample_h_given_v(self, v0_sample):
@@ -154,10 +154,11 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=15):
     rng = numpy.random.RandomState(123)
 
     # construct RBM
-    rbm = RestrictedBoltzmannMachine(input=data, n_visible=6, n_hidden=2, numpy_rng=rng)
+    rbm = RBM(input=data, n_visible=6, n_hidden=2, numpy_rng=rng)
 
     for epoch in xrange(training_epochs):
-        cost = rbm.contrastive_divergence(lr=learning_rate, k=k)
+        rbm.contrastive_divergence(lr=learning_rate, k=k)
+        cost = rbm.get_reconstruction_cross_entropy()
         print >> sys.stderr, 'Training epoch %d, cost is ' % epoch, cost
 
 

@@ -56,7 +56,10 @@ class RBM(object):
         # self.params = [self.W, self.hbias, self.vbias]
 
 
-    def contrastive_divergence(self, lr=0.1, k=1):
+    def contrastive_divergence(self, lr=0.1, k=1, input=None):
+        if input is not None:
+            self.input = input
+        
         ''' CD-k '''
         pre_sigmoid_ph, ph_mean, ph_sample = self.sample_h_given_v(self.input)
 
@@ -72,9 +75,11 @@ class RBM(object):
 
         # chain_end = nv_samples
 
-        self.W += lr * (numpy.dot(self.input, ph_sample) - numpy.dot(nv_samples, nh_samples))
+
+        self.W += lr * (numpy.dot(self.input.T, ph_sample)
+                        - numpy.dot(nv_samples.T, nh_samples))
         self.hbias += lr * numpy.mean(ph_sample - nh_samples, axis=0)
-        self.vbias += lr * numpy.mean(self.input - nv_samples, axis=1)
+        self.vbias += lr * numpy.mean(self.input - nv_samples, axis=0)
 
 
         # cost = self.get_reconstruction_cross_entropy()
@@ -116,45 +121,37 @@ class RBM(object):
     
 
     def get_reconstruction_cross_entropy(self):
-        pre_sigmoid_activation = numpy.dot(self.input, self.W) + self.hbias
-        sigmoid_activation = sigmoid(pre_sigmoid_activation)
+        pre_sigmoid_activation_h = numpy.dot(self.input, self.W) + self.hbias
+        sigmoid_activation_h = sigmoid(pre_sigmoid_activation_h)
+        
+        pre_sigmoid_activation_v = numpy.dot(sigmoid_activation_h, self.W.T) + self.vbias
+        sigmoid_activation_v = sigmoid(pre_sigmoid_activation_v)
 
-        pre_sigmoid_activation = - numpy.dot(sigmoid_activation, self.W.T) - self.vbias
-        sigmoid_activation = sigmoid(pre_sigmoid_activation)
-
-        cross_entropy =  numpy.mean(
-            numpy.sum(self.input * numpy.log(sigmoid_activation) +
-            (1 - self.input) * numpy.log(1 - sigmoid_activation),
+        cross_entropy =  - numpy.mean(
+            numpy.sum(self.input * numpy.log(sigmoid_activation_v) +
+            (1 - self.input) * numpy.log(1 - sigmoid_activation_v),
                       axis=1))
         
         return cross_entropy
 
 
-    def free_energy(self, v_sample):
-        wx_b = numpy.dot(v_sample, self.W) + self.hbias
-        vbias_term = numpy.dot(v_sample, self.vbias)
-        hidden_term = numpy.sum(numpy.log(1 + numpy.exp(wx_b)), axis=1)
-        return -hidden_term - vbias_term
 
 
 
-
-
-
-def test_rbm(learning_rate=0.1, k=1, training_epochs=15):
+def test_rbm(learning_rate=0.1, k=1, training_epochs=20):
     data = numpy.array([
-        [1,1,1,0,0,0],
-        [1,0,1,0,0,0],
-        [1,1,1,0,0,0],
-        [0,0,1,1,1,0],
-        [0,0,1,1,0,0],
-        [0,0,1,1,1,0]])
-    # A 6x6 matrix where each row is a training example and each column is a visible unit.
+        [1,1,1,0,0],
+        [1,0,1,0,0],
+        [1,1,1,0,0],
+        [0,0,1,1,1],
+        [0,0,1,1,0],
+        [0,0,1,1,1]])
+
 
     rng = numpy.random.RandomState(123)
 
     # construct RBM
-    rbm = RBM(input=data, n_visible=6, n_hidden=2, numpy_rng=rng)
+    rbm = RBM(input=data, n_visible=5, n_hidden=2, numpy_rng=rng)
 
     for epoch in xrange(training_epochs):
         rbm.contrastive_divergence(lr=learning_rate, k=k)

@@ -25,8 +25,9 @@ from utils import *
 
 
 class DBN(object):
-    def __init__(self, input=None, label=None, n_ins=2, hidden_layer_sizes=[3, 3], n_outs=2, \
-                 numpy_rng=None):   # constructor does not contain input
+    def __init__(self, input=None, label=None,\
+                 n_ins=2, hidden_layer_sizes=[3, 3], n_outs=2,\
+                 numpy_rng=None):
         
         self.x = input
         self.y = label

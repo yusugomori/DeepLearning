@@ -55,7 +55,7 @@ class DBN(object):
             if i == 0:
                 layer_input = self.x
             else:
-                layer_input = self.sigmoid_layers[-1].output()
+                layer_input = self.sigmoid_layers[-1].sample_h_given_v()
                 
             # construct sigmoid_layer
             sigmoid_layer = HiddenLayer(input=layer_input,
@@ -76,7 +76,7 @@ class DBN(object):
 
 
         # layer for output using Logistic Regression
-        self.log_layer = LogisticRegression(input=self.sigmoid_layers[-1].output(),
+        self.log_layer = LogisticRegression(input=self.sigmoid_layers[-1].sample_h_given_v(),
                                             label=self.y,
                                             n_in=hidden_layer_sizes[-1],
                                             n_out=n_outs)
@@ -92,9 +92,8 @@ class DBN(object):
             if i == 0:
                 layer_input = self.x
             else:
-                layer_input = self.sigmoid_layers[i-1].output()
+                layer_input = self.sigmoid_layers[i-1].sample_h_given_v(layer_input)
             rbm = self.rbm_layers[i]
-
             
             for epoch in xrange(epochs):
                 c = []
@@ -108,7 +107,7 @@ class DBN(object):
 
 
     def finetune(self, lr=0.1, epochs=100):
-        layer_input = self.sigmoid_layers[-1].output()
+        layer_input = self.sigmoid_layers[-1].sample_h_given_v()
 
         # train log_layer
         epoch = 0

@@ -56,3 +56,12 @@ class HiddenLayer(object):
                 else self.activation(linear_output))
 
 
+    def sample_h_given_v(self, input=None):
+        if input is not None:
+            self.input = input
+
+        v_mean = self.output()
+        h_sample = self.numpy_rng.binomial(size=v_mean.shape,
+                                           n=1,
+                                           p=v_mean)
+        return h_sample

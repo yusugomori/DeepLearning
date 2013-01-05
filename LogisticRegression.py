@@ -29,7 +29,8 @@ class LogisticRegression(object):
         if input is not None:
             self.x = input
 
-        p_y_given_x = sigmoid(numpy.dot(self.x, self.W) + self.b)
+        # p_y_given_x = sigmoid(numpy.dot(self.x, self.W) + self.b)
+        p_y_given_x = softmax(numpy.dot(self.x, self.W) + self.b)
         d_y = self.y - p_y_given_x
         
         self.W += lr * numpy.dot(self.x.T, d_y) - lr * L2_reg * self.W
@@ -39,7 +40,8 @@ class LogisticRegression(object):
         # return cost
 
     def negative_log_likelihood(self):
-        sigmoid_activation = sigmoid(numpy.dot(self.x, self.W) + self.b)
+        # sigmoid_activation = sigmoid(numpy.dot(self.x, self.W) + self.b)
+        sigmoid_activation = softmax(numpy.dot(self.x, self.W) + self.b)
 
         cross_entropy = - numpy.mean(
             numpy.sum(self.y * numpy.log(sigmoid_activation) +
@@ -50,7 +52,8 @@ class LogisticRegression(object):
 
 
     def predict(self, x):
-        return sigmoid(numpy.dot(x, self.W) + self.b)
+        # return sigmoid(numpy.dot(x, self.W) + self.b)
+        return softmax(numpy.dot(x, self.W) + self.b)
 
 
 def test_lr(learning_rate=0.01, n_epochs=200):

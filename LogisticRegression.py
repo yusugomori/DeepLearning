@@ -25,21 +25,21 @@ class LogisticRegression(object):
 
         # self.params = [self.W, self.b]
 
-    def train(self, lr=0.1, input=None):
+    def train(self, lr=0.1, input=None, L2_reg=0.00):
         if input is not None:
             self.x = input
 
-        p_y_given_x = softmax(numpy.dot(self.x, self.W) + self.b)
+        p_y_given_x = sigmoid(numpy.dot(self.x, self.W) + self.b)
         d_y = self.y - p_y_given_x
         
-        self.W += lr * numpy.dot(self.x.T, d_y)
+        self.W += lr * numpy.dot(self.x.T, d_y) - lr * L2_reg * self.W
         self.b += lr * numpy.mean(d_y, axis=0)
         
         # cost = self.negative_log_likelihood()
         # return cost
 
     def negative_log_likelihood(self):
-        sigmoid_activation = softmax(numpy.dot(self.x, self.W) + self.b)
+        sigmoid_activation = sigmoid(numpy.dot(self.x, self.W) + self.b)
 
         cross_entropy = - numpy.mean(
             numpy.sum(self.y * numpy.log(sigmoid_activation) +
@@ -50,10 +50,10 @@ class LogisticRegression(object):
 
 
     def predict(self, x):
-        return softmax(numpy.dot(x, self.W) + self.b)
+        return sigmoid(numpy.dot(x, self.W) + self.b)
 
 
-def test_lr(learning_rate=0.01, n_epochs=1000):
+def test_lr(learning_rate=0.01, n_epochs=200):
     # training data
     x = numpy.array([[1,1,1,0,0,0],
                      [1,0,1,0,0,0],
@@ -75,7 +75,7 @@ def test_lr(learning_rate=0.01, n_epochs=1000):
     # train
     for epoch in xrange(n_epochs):
         classifier.train(lr=learning_rate)
-        # cost = classifier.negative_log_likelihood(y=y)
+        # cost = classifier.negative_log_likelihood()
         # print >> sys.stderr, 'Training epoch %d, cost is ' % epoch, cost
         learning_rate *= 0.95
 

@@ -133,8 +133,10 @@ class RBM(object):
         
         return cross_entropy
 
-
-
+    def reconstruct(self, v):
+        h = sigmoid(numpy.dot(v, self.W) + self.hbias)
+        reconstructed_v = sigmoid(numpy.dot(h, self.W.T) + self.vbias)
+        return reconstructed_v
 
 
 def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
@@ -159,12 +161,10 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
 
 
     # test
-    # v = numpy.array([0, 0, 0, 1, 1, 0])
-    v = numpy.array([1, 1, 0, 0, 0, 0])
-    h = sigmoid(numpy.dot(v, rbm.W) + rbm.hbias)
+    v = numpy.array([[0, 0, 0, 1, 1, 0],
+                     [1, 1, 0, 0, 0, 0]])
 
-    reconstructed_v = sigmoid(numpy.dot(h, rbm.W.T) + rbm.vbias)
-    print reconstructed_v
+    print rbm.reconstruct(v)
 
 
 if __name__ == "__main__":

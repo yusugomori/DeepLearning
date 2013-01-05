@@ -3,6 +3,17 @@
 
 '''
  Deep Belief Nets
+
+ References :
+   - Y. Bengio, P. Lamblin, D. Popovici, H. Larochelle: Greedy Layer-Wise
+   Training of Deep Networks, Advances in Neural Information Processing
+   Systems 19, 2007
+
+
+   - DeepLearningTutorials
+   https://github.com/lisa-lab/DeepLearningTutorials
+
+
 '''
 
 import sys

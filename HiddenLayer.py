@@ -43,10 +43,6 @@ class HiddenLayer(object):
         self.b = b
 
         self.activation = activation
-        
-        # linear_output = numpy.dot(input, self.W) + self.b
-        # self.output = (linear_output if activation is None
-        #                else activation(linear_output))
 
         # self.params = [self.W, self.b]
 
@@ -55,7 +51,7 @@ class HiddenLayer(object):
             self.input = input
         
         linear_output = numpy.dot(self.input, self.W) + self.b
-        # linear_output = numpy.dot(self.input, self.W) + self.b
+
         return (linear_output if self.activation is None
                 else self.activation(linear_output))
 

@@ -96,14 +96,25 @@ class DBN(object):
             rbm = self.rbm_layers[i]
             
             for epoch in xrange(epochs):
-                c = []
                 rbm.contrastive_divergence(lr=lr, k=k, input=layer_input)
                 # cost = rbm.get_reconstruction_cross_entropy()
-                # # c.append(cost)
                 # print >> sys.stderr, \
                 #        'Pre-training layer %d, epoch %d, cost ' %(i, epoch), cost
-                
-                # print numpy.mean(c)
+
+    # def pretrain(self, lr=0.1, k=1, epochs=100):
+    #     # pre-train layer-wise
+    #     for i in xrange(self.n_layers):
+    #         rbm = self.rbm_layers[i]
+            
+    #         for epoch in xrange(epochs):
+    #             layer_input = self.x
+    #             for j in xrange(i):
+    #                 layer_input = self.sigmoid_layers[j].sample_h_given_v(layer_input)
+            
+    #             rbm.contrastive_divergence(lr=lr, k=k, input=layer_input)
+    #             # cost = rbm.get_reconstruction_cross_entropy()
+    #             # print >> sys.stderr, \
+    #             #        'Pre-training layer %d, epoch %d, cost ' %(i, epoch), cost
 
 
     def finetune(self, lr=0.1, epochs=100):
@@ -153,7 +164,7 @@ def test_dbn(pretrain_lr=0.1, pretraining_epochs=1000, k=1, \
     rng = numpy.random.RandomState(123)
 
     # construct DBN
-    dbn = DBN(input=x, label=y, n_ins=6, hidden_layer_sizes=[10], n_outs=2, numpy_rng=rng)
+    dbn = DBN(input=x, label=y, n_ins=6, hidden_layer_sizes=[4, 3], n_outs=2, numpy_rng=rng)
 
     # pre-training (TrainUnsupervisedDBN)
     dbn.pretrain(lr=pretrain_lr, k=1, epochs=pretraining_epochs)

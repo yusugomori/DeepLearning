@@ -5,6 +5,9 @@
  Logistic Regression
  
  References :
+   - Jason Rennie: Logistic Regression,
+   http://qwone.com/~jason/writing/lr.pdf
+ 
    - DeepLearningTutorials
    https://github.com/lisa-lab/DeepLearningTutorials
 

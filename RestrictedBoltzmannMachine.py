@@ -154,6 +154,7 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     # construct RBM
     rbm = RBM(input=data, n_visible=6, n_hidden=2, numpy_rng=rng)
 
+    # train
     for epoch in xrange(training_epochs):
         rbm.contrastive_divergence(lr=learning_rate, k=k)
         # cost = rbm.get_reconstruction_cross_entropy()

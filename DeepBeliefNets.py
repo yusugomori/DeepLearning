@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
- Deep Belief Nets
+ Deep Belief Nets (DBN)
 
  References :
    - Y. Bengio, P. Lamblin, D. Popovici, H. Larochelle: Greedy Layer-Wise

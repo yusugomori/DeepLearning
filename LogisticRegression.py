@@ -87,7 +87,10 @@ def test_lr(learning_rate=0.01, n_epochs=200):
 
 
     # test
-    x = numpy.array([1, 1, 0, 0, 0, 0])
+    x = numpy.array([[1, 1, 0, 0, 0, 0],
+                     [0, 0, 0, 1, 1, 0],
+                     [1, 1, 1, 1, 1, 0]])
+
     print >> sys.stderr, classifier.predict(x)
 
 

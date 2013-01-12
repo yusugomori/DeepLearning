@@ -162,8 +162,8 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
 
 
     # test
-    v = numpy.array([[0, 0, 0, 1, 1, 0],
-                     [1, 1, 0, 0, 0, 0]])
+    v = numpy.array([[1, 1, 0, 0, 0, 0],
+                     [0, 0, 0, 1, 1, 0]])
 
     print rbm.reconstruct(v)
 

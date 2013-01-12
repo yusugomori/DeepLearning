@@ -17,4 +17,7 @@ def sigmoid_err_handler(type, flg):
 
 def softmax(x):
     e = numpy.exp(x - numpy.max(x))  # prevent overflow
-    return e / numpy.sum(e, axis=0)
+    if e.ndim == 1:
+        return e / numpy.sum(e, axis=0)
+    else:  
+        return e / numpy.array([numpy.sum(e, axis=1)]).T  # ndim = 2

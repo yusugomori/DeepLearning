@@ -11,7 +11,6 @@
    - DeepLearningTutorials
    https://github.com/lisa-lab/DeepLearningTutorials
 
-
 '''
 
 import sys

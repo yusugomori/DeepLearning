@@ -4,11 +4,9 @@
 '''
  Hidden Layer
 
-
  References :
    - DeepLearningTutorials
    https://github.com/lisa-lab/DeepLearningTutorials
-
 
 '''
 

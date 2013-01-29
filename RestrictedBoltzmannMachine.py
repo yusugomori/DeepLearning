@@ -141,6 +141,7 @@ class RBM(object):
 
 '''
  RBM  w/ continuous-valued inputs (Linear Energy)
+ 
 '''
 class CRBM(RBM):
     def propdown(self, h):
@@ -162,7 +163,6 @@ class CRBM(RBM):
 
         v1_sample = numpy.log((1 - U * (1 - ep))) / a_h
 
-        
         return [v1_mean, v1_sample]
 
 
@@ -214,8 +214,8 @@ def test_crbm(learning_rate=0.1, k=1, training_epochs=1000):
     # train
     for epoch in xrange(training_epochs):
         rbm.contrastive_divergence(lr=learning_rate, k=k)
-        cost = rbm.get_reconstruction_cross_entropy()
-        print >> sys.stderr, 'Training epoch %d, cost is ' % epoch, cost
+        # cost = rbm.get_reconstruction_cross_entropy()
+        # print >> sys.stderr, 'Training epoch %d, cost is ' % epoch, cost
 
 
     # test
@@ -226,5 +226,8 @@ def test_crbm(learning_rate=0.1, k=1, training_epochs=1000):
 
 
 if __name__ == "__main__":
-    # test_rbm()
+    print >> sys.stderr, 'RBM'
+    test_rbm()
+    print >> sys.stderr
+    print >> sys.stderr, 'CRBM'
     test_crbm()

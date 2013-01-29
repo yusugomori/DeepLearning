@@ -61,17 +61,17 @@ class RBM(object):
             self.input = input
         
         ''' CD-k '''
-        pre_sigmoid_ph, ph_mean, ph_sample = self.sample_h_given_v(self.input)
+        ph_mean, ph_sample = self.sample_h_given_v(self.input)
 
         chain_start = ph_sample
 
         for step in xrange(k):
             if step == 0:
-                pre_sigmoid_nvs, nv_means, nv_samples,\
-                pre_sigmoid_nhs, nh_means, nh_samples = self.gibbs_hvh(chain_start)
+                nv_means, nv_samples,\
+                nh_means, nh_samples = self.gibbs_hvh(chain_start)
             else:
-                pre_sigmoid_nvs, nv_means, nv_samples,\
-                pre_sigmoid_nhs, nh_means, nh_samples = self.gibbs_hvh(nh_samples)
+                nv_means, nv_samples,\
+                nh_means, nh_samples = self.gibbs_hvh(nh_samples)
 
         # chain_end = nv_samples
 
@@ -86,37 +86,37 @@ class RBM(object):
 
 
     def sample_h_given_v(self, v0_sample):
-        pre_sigmoid_h1, h1_mean = self.propup(v0_sample)
+        h1_mean = self.propup(v0_sample)
         h1_sample = self.numpy_rng.binomial(size=h1_mean.shape,   # discrete: binomial
                                        n=1,
                                        p=h1_mean)
 
-        return [pre_sigmoid_h1, h1_mean, h1_sample]
+        return [h1_mean, h1_sample]
 
 
     def sample_v_given_h(self, h0_sample):
-        pre_sigmoid_v1, v1_mean = self.propdown(h0_sample)
+        v1_mean = self.propdown(h0_sample)
         v1_sample = self.numpy_rng.binomial(size=v1_mean.shape,   # discrete: binomial
                                             n=1,
                                             p=v1_mean)
         
-        return [pre_sigmoid_v1, v1_mean, v1_sample]
+        return [v1_mean, v1_sample]
 
     def propup(self, v):
         pre_sigmoid_activation = numpy.dot(v, self.W) + self.hbias
-        return [pre_sigmoid_activation, sigmoid(pre_sigmoid_activation)]
+        return sigmoid(pre_sigmoid_activation)
 
     def propdown(self, h):
         pre_sigmoid_activation = numpy.dot(h, self.W.T) + self.vbias
-        return [pre_sigmoid_activation, sigmoid(pre_sigmoid_activation)]
+        return sigmoid(pre_sigmoid_activation)
 
 
     def gibbs_hvh(self, h0_sample):
-        pre_sigmoid_v1, v1_mean, v1_sample = self.sample_v_given_h(h0_sample)
-        pre_sigmoid_h1, h1_mean, h1_sample = self.sample_h_given_v(v1_sample)
+        v1_mean, v1_sample = self.sample_v_given_h(h0_sample)
+        h1_mean, h1_sample = self.sample_h_given_v(v1_sample)
 
-        return [pre_sigmoid_v1, v1_mean, v1_sample,
-                pre_sigmoid_h1, h1_mean, h1_sample]
+        return [v1_mean, v1_sample,
+                h1_mean, h1_sample]
     
 
     def get_reconstruction_cross_entropy(self):
@@ -139,6 +139,35 @@ class RBM(object):
         return reconstructed_v
 
 
+'''
+ RBM  w/ continuous-valued inputs (Linear Energy)
+'''
+class CRBM(RBM):
+    def propdown(self, h):
+        pre_activation = numpy.dot(h, self.W.T) + self.vbias
+        return pre_activation
+        
+
+
+    def sample_v_given_h(self, h0_sample):
+        a_h = self.propdown(h0_sample)
+        en = numpy.exp(-a_h)
+        ep = numpy.exp(a_h)
+
+        v1_mean = 1 / (1 - en) - 1 / a_h
+        U = numpy.array(self.numpy_rng.uniform(
+            low=0,
+            high=1,
+            size=v1_mean.shape))
+
+        v1_sample = numpy.log((1 - U * (1 - ep))) / a_h
+
+        
+        return [v1_mean, v1_sample]
+
+
+
+
 def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     data = numpy.array([[1,1,1,0,0,0],
                         [1,0,1,0,0,0],
@@ -146,7 +175,6 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
                         [0,0,1,1,1,0],
                         [0,0,1,1,0,0],
                         [0,0,1,1,1,0]])
-
 
 
     rng = numpy.random.RandomState(123)
@@ -168,5 +196,35 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     print rbm.reconstruct(v)
 
 
+
+def test_crbm(learning_rate=0.1, k=1, training_epochs=1000):
+    data = numpy.array([[0.4, 0.5, 0.5, 0.,  0.,  0.],
+                        [0.5, 0.3,  0.5, 0.,  0.,  0.],
+                        [0.4, 0.5, 0.5, 0.,  0.,  0.],
+                        [0.,  0.,  0.5, 0.3, 0.5, 0.],
+                        [0.,  0.,  0.5, 0.4, 0.5, 0.],
+                        [0.,  0.,  0.5, 0.5, 0.5, 0.]])
+
+
+    rng = numpy.random.RandomState(123)
+
+    # construct CRBM
+    rbm = CRBM(input=data, n_visible=6, n_hidden=5, numpy_rng=rng)
+
+    # train
+    for epoch in xrange(training_epochs):
+        rbm.contrastive_divergence(lr=learning_rate, k=k)
+        cost = rbm.get_reconstruction_cross_entropy()
+        print >> sys.stderr, 'Training epoch %d, cost is ' % epoch, cost
+
+
+    # test
+    v = numpy.array([[0.5, 0.5, 0., 0., 0., 0.],
+                     [0., 0., 0., 0.5, 0.5, 0.]])
+
+    print rbm.reconstruct(v)
+
+
 if __name__ == "__main__":
-    test_rbm()
+    # test_rbm()
+    test_crbm()

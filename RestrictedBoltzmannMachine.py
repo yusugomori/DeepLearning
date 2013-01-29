@@ -228,6 +228,7 @@ def test_crbm(learning_rate=0.1, k=1, training_epochs=1000):
 if __name__ == "__main__":
     print >> sys.stderr, 'RBM'
     test_rbm()
-    print >> sys.stderr
-    print >> sys.stderr, 'CRBM'
-    test_crbm()
+    
+    # print >> sys.stderr
+    # print >> sys.stderr, 'CRBM'
+    # test_crbm()

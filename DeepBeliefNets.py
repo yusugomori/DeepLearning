@@ -300,6 +300,7 @@ def test_cdbn(pretrain_lr=0.1, pretraining_epochs=1000, k=1, \
 if __name__ == "__main__":
     print >> sys.stderr, 'DBN'
     test_dbn()
-    print >> sys.stderr
-    print >> sys.stderr, 'CDBN'
-    test_cdbn()
+    
+    # print >> sys.stderr
+    # print >> sys.stderr, 'CDBN'
+    # test_cdbn()

@@ -10,6 +10,8 @@
 
   - CRBM: Restricted Boltzmann Machine w/ continuous-valued inputs
 
+  - dA:   Denoising Autoencoders
+
   - LogisticRegression: Logistic Regression
 
   - HiddenLayer: Hidden Layer of Neural Networks

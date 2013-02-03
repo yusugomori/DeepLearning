@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+ Denoising Autoencoders (dA)
+
+ References :
+   - P. Vincent, H. Larochelle, Y. Bengio, P.A. Manzagol: Extracting and
+   Composing Robust Features with Denoising Autoencoders, ICML'08, 1096-1103,
+   2008
+
+   - DeepLearningTutorials
+   https://github.com/lisa-lab/DeepLearningTutorials
+
+"""
+
+
 import sys
 import numpy
 from utils import *

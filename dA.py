@@ -12,6 +12,9 @@
    - DeepLearningTutorials
    https://github.com/lisa-lab/DeepLearningTutorials
 
+   - Yusuke Sugomori: Stochastic Gradient Descent for Denoising Autoencoders,
+   http://yusugomori.com/docs/SGD_DA.pdf
+
 """
 
 

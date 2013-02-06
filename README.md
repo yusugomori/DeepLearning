@@ -25,9 +25,16 @@
   Training of Deep Networks, Advances in Neural Information Processing
   Systems 19, 2007
 
+  - P. Vincent, H. Larochelle, Y. Bengio, P.A. Manzagol: Extracting and
+  Composing Robust Features with Denoising Autoencoders, ICML' 08, 1096-1103,
+  2008
+
 
   - DeepLearningTutorials
   https://github.com/lisa-lab/DeepLearningTutorials
+
+  - Yusuke Sugomori: Stochastic Gradient Descent for Denoising Autoencoders,
+  http://yusugomori.com/docs/SGD_DA.pdf
 
 
 

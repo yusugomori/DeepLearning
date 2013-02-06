@@ -65,14 +65,6 @@ class SdA(object):
             self.sigmoid_layers.append(sigmoid_layer)
 
 
-            # construct rbm_layer
-            # rbm_layer = RBM(input=layer_input,
-            #                 n_visible=input_size,
-            #                 n_hidden=hidden_layer_sizes[i],
-            #                 W=sigmoid_layer.W,     # W, b are shared
-            #                 hbias=sigmoid_layer.b)
-            # self.rbm_layers.append(rbm_layer)
-            
             # construct dA_layers
             dA_layer = dA(input=layer_input,
                           n_visible=input_size,

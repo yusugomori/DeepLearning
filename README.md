@@ -12,6 +12,8 @@
 
   - dA:   Denoising Autoencoders
 
+  - SdA:  Stacked Denoising Autoencoders
+
   - LogisticRegression: Logistic Regression
 
   - HiddenLayer: Hidden Layer of Neural Networks

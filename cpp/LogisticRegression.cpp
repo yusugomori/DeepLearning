@@ -11,8 +11,8 @@ LogisticRegression::LogisticRegression(int size, int in, int out) {
   n_out = out;
 
   // initialize W, b
-  W = new double*[n_in];
-  for (int i=0; i<n_in; i++) W[i] = new double[n_out];
+  W = new double*[n_out];
+  for (int i=0; i<n_out; i++) W[i] = new double[n_in];
   b = new double[n_out];
 }
 
@@ -24,22 +24,21 @@ LogisticRegression::~LogisticRegression() {
 
 
 void LogisticRegression::train(int *x, int *y, double lr) {
-  int i,j;
   double p_y_given_x[n_out];
   double dy[n_out];
 
-  for (i=0; i<n_out; i++) {
-    for (j=0; j<n_in; j++) {
+  for (int i=0; i<n_out; i++) {
+    for (int j=0; j<n_in; j++) {
       p_y_given_x[i] += W[i][j] * x[j];
     }
     p_y_given_x[i] += b[i];
   }
   softmax(p_y_given_x);
 
-  for (i=0; i<n_out; i++) {
+  for (int i=0; i<n_out; i++) {
     dy[i] = y[i] - p_y_given_x[i];
 
-    for (j=0; j<n_in; j++) {
+    for (int j=0; j<n_in; j++) {
       W[i][j] += lr * dy[i] * x[j] / N;
     }
 
@@ -48,17 +47,16 @@ void LogisticRegression::train(int *x, int *y, double lr) {
 }
 
 void LogisticRegression::softmax(double *x) {
-  double max;
-  double sum;
+  double max = 0.0;
+  double sum = 0.0;
   
-  int i;
-  for (i=0; i<n_out; i++) if(max < x[i]) max = x[i];
-  for (i=0; i<n_out; i++) {
+  for (int i=0; i<n_out; i++) if(max < x[i]) max = x[i];
+  for (int i=0; i<n_out; i++) {
     x[i] = exp(x[i] - max);
     sum += x[i];
   } 
 
-  for(i=0; i<n_out; i++) x[i] /= sum;
+  for(int i=0; i<n_out; i++) x[i] /= sum;
 }
 
 void LogisticRegression::predict(int *x, double *y) {
@@ -74,8 +72,6 @@ void LogisticRegression::predict(int *x, double *y) {
 
 
 void test_lr() {
-  int i,j;
-
   double learning_rate = 0.1;
   double n_epochs = 500;
 
@@ -129,7 +125,7 @@ void test_lr() {
 
   // train online
   for (int epoch=0; epoch<n_epochs; epoch++) {
-    for (i=0; i<train_N; i++) {
+    for (int i=0; i<train_N; i++) {
       classifier.train(train_X[i], train_Y[i], learning_rate);
     }
     learning_rate *= 0.95;
@@ -145,9 +141,9 @@ void test_lr() {
 
 
   // test
-  for (i=0; i<test_N; i++) {
+  for (int i=0; i<test_N; i++) {
     classifier.predict(test_X[i], test_Y[i]);
-    for (j=0; j<n_out; j++) {
+    for (int j=0; j<n_out; j++) {
       cout << test_Y[i][j] << endl;
     }
   }

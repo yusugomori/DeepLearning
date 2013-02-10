@@ -74,13 +74,13 @@ void RBM::contrastive_divergence(int *input, double lr, int k) {
 
   for(int i=0; i<n_hidden; i++) {
     for(int j=0; j<n_visible; j++) {
-      W[i][j] += lr * (ph_sample[i] * input[j] - nh_means[i] * nv_samples[j]);
+      W[i][j] += lr * (ph_sample[i] * input[j] - nh_means[i] * nv_samples[j]) / N;
     }
-    hbias[i] += lr * (ph_sample[i] - nh_means[i]);
+    hbias[i] += lr * (ph_sample[i] - nh_means[i]) / N;
   }
 
   for(int i=0; i<n_visible; i++) {
-    vbias[i] += lr * (input[i] - nv_samples[i]);
+    vbias[i] += lr * (input[i] - nv_samples[i]) / N;
   }
 
   delete[] ph_mean;
@@ -155,7 +155,7 @@ void test_rbm() {
   srand(0);
 
   double learning_rate = 0.1;
-  int training_epochs = 100;
+  int training_epochs = 1000;
   int k = 1;
   
   int train_N = 6;

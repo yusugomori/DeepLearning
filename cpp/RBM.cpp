@@ -65,7 +65,7 @@ void RBM::contrastive_divergence(int *input, double lr, int k) {
   sample_h_given_v(input, ph_mean, ph_sample);
 
   for(int step=0; step<k; step++) {
-    if (step == 0) {
+    if(step == 0) {
       gibbs_hvh(ph_sample, nv_means, nv_samples, nh_means, nh_samples);
     } else {
       gibbs_hvh(nh_samples, nv_means, nv_samples, nh_means, nh_samples);

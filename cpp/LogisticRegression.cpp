@@ -12,46 +12,48 @@ LogisticRegression::LogisticRegression(int size, int in, int out) {
 
   // initialize W, b
   W = new double*[n_out];
-  for (int i=0; i<n_out; i++) W[i] = new double[n_in];
+  for(int i=0; i<n_out; i++) W[i] = new double[n_in];
   b = new double[n_out];
 }
 
 LogisticRegression::~LogisticRegression() {
-  for (int i=0; i<n_out; i++) delete[] W[i];
+  for(int i=0; i<n_out; i++) delete[] W[i];
   delete[] W;
   delete[] b;
 }
 
 
 void LogisticRegression::train(int *x, int *y, double lr) {
-  double p_y_given_x[n_out];
-  double dy[n_out];
+  double *p_y_given_x = new double[n_out];
+  double *dy = new double[n_out];
 
-  for (int i=0; i<n_out; i++) {
-    for (int j=0; j<n_in; j++) {
+  for(int i=0; i<n_out; i++) {
+    for(int j=0; j<n_in; j++) {
       p_y_given_x[i] += W[i][j] * x[j];
     }
     p_y_given_x[i] += b[i];
   }
   softmax(p_y_given_x);
 
-  for (int i=0; i<n_out; i++) {
+  for(int i=0; i<n_out; i++) {
     dy[i] = y[i] - p_y_given_x[i];
 
-    for (int j=0; j<n_in; j++) {
+    for(int j=0; j<n_in; j++) {
       W[i][j] += lr * dy[i] * x[j] / N;
     }
 
     b[i] += lr * dy[i] / N;
   }
+  delete[] p_y_given_x;
+  delete[] dy;
 }
 
 void LogisticRegression::softmax(double *x) {
   double max = 0.0;
   double sum = 0.0;
   
-  for (int i=0; i<n_out; i++) if(max < x[i]) max = x[i];
-  for (int i=0; i<n_out; i++) {
+  for(int i=0; i<n_out; i++) if(max < x[i]) max = x[i];
+  for(int i=0; i<n_out; i++) {
     x[i] = exp(x[i] - max);
     sum += x[i];
   } 
@@ -60,8 +62,8 @@ void LogisticRegression::softmax(double *x) {
 }
 
 void LogisticRegression::predict(int *x, double *y) {
-  for (int i=0; i<n_out; i++) {
-    for (int j=0; j<n_in; j++) {
+  for(int i=0; i<n_out; i++) {
+    for(int j=0; j<n_in; j++) {
       y[i] += W[i][j] * x[j];
     }
     y[i] += b[i];
@@ -76,7 +78,7 @@ void test_lr() {
   double n_epochs = 500;
 
   int train_N = 6;
-  int test_N = 1;
+  int test_N = 2;
   int n_in = 6;
   int n_out = 2;
   // int **train_X;
@@ -86,14 +88,14 @@ void test_lr() {
 
   // train_X = new int*[train_N];
   // train_Y = new int*[train_N];
-  // for (i=0; i<train_N; i++){
+  // for(i=0; i<train_N; i++){
   //   train_X[i] = new int[n_in];
   //   train_Y[i] = new int[n_out];
   // };
 
   // test_X = new int*[test_N];
   // test_Y = new double*[test_N];
-  // for (i=0; i<test_N; i++){
+  // for(i=0; i<test_N; i++){
   //   test_X[i] = new int[n_in];
   //   test_Y[i] = new double[n_out];
   // }
@@ -124,28 +126,30 @@ void test_lr() {
 
 
   // train online
-  for (int epoch=0; epoch<n_epochs; epoch++) {
-    for (int i=0; i<train_N; i++) {
+  for(int epoch=0; epoch<n_epochs; epoch++) {
+    for(int i=0; i<train_N; i++) {
       classifier.train(train_X[i], train_Y[i], learning_rate);
     }
-    learning_rate *= 0.95;
+    // learning_rate *= 0.95;
   }
 
 
   // test data
-  int test_X[1][6] = {
-    {1, 1, 1, 0, 0, 0}
+  int test_X[2][6] = {
+    {1, 0, 1, 0, 0, 0},
+    {0, 0, 1, 1, 1, 0}
   };
 
-  double test_Y[1][2];
+  double test_Y[2][2];
 
 
   // test
-  for (int i=0; i<test_N; i++) {
+  for(int i=0; i<test_N; i++) {
     classifier.predict(test_X[i], test_Y[i]);
-    for (int j=0; j<n_out; j++) {
-      cout << test_Y[i][j] << endl;
+    for(int j=0; j<n_out; j++) {
+      cout << test_Y[i][j] << " ";
     }
+    cout << endl;
   }
 
 }

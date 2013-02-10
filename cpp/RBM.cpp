@@ -3,38 +3,11 @@
 #include "RBM.h"
 using namespace std;
 
-
-RBM::RBM(int size, int n_v, int n_h) {
-  N = size;
-  n_visible = n_v;
-  n_hidden = n_h;
-
-  W = new double*[n_hidden];
-  for(int i=0; i<n_hidden; i++) W[i] = new double[n_visible];
-  hbias = new double[n_hidden];
-  vbias = new double[n_visible];
-
-  double a = 1.0 / n_visible;
-
-  for(int i=0; i<n_hidden; i++) {
-    for(int j=0; j<n_visible; j++) {
-      W[i][j] = uniform(-a, a);
-    }
-  }
-}
-
-RBM::~RBM() {
-  for(int i=0; i<n_hidden; i++) delete[] W[i];
-  delete[] W;
-  delete[] hbias;
-  delete[] vbias;
-}
-
-double RBM::uniform(double min, double max) {
+double uniform(double min, double max) {
   return rand() / (RAND_MAX + 1.0) * (max - min) + min;
 }
 
-int RBM::binomial(int n, double p) {
+int binomial(int n, double p) {
   if(p < 0 || p > 1) return 0;
   
   int c = 0;
@@ -48,8 +21,48 @@ int RBM::binomial(int n, double p) {
   return c;
 }
 
-double RBM::sigmoid(double x) {
+double sigmoid(double x) {
   return 1.0 / (1.0 + exp(-x));
+}
+
+
+RBM::RBM(int size, int n_v, int n_h, double **w, double *hb, double *vb) {
+  N = size;
+  n_visible = n_v;
+  n_hidden = n_h;
+
+  if(w == NULL) {
+    W = new double*[n_hidden];
+    for(int i=0; i<n_hidden; i++) W[i] = new double[n_visible];
+    double a = 1.0 / n_visible;
+
+    for(int i=0; i<n_hidden; i++) {
+      for(int j=0; j<n_visible; j++) {
+        W[i][j] = uniform(-a, a);
+      }
+    }
+  } else {
+    W = w;
+  }
+
+  if(hb == NULL) {
+    hbias = new double[n_hidden];
+  } else {
+    hbias = hb;
+  }
+
+  if(vb == NULL) {
+    vbias = new double[n_visible];
+  } else {
+    vbias = vb;
+  }
+}
+
+RBM::~RBM() {
+  for(int i=0; i<n_hidden; i++) delete[] W[i];
+  delete[] W;
+  delete[] hbias;
+  delete[] vbias;
 }
 
 
@@ -173,8 +186,9 @@ void test_rbm() {
     {0, 0, 1, 1, 1, 0}
   };
 
+
   // construct RBM
-  RBM rbm(train_N, n_visible, n_hidden);
+  RBM rbm(train_N, n_visible, n_hidden, NULL, NULL, NULL);
 
   // train
   for(int epoch=0; epoch<training_epochs; epoch++) {

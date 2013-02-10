@@ -10,7 +10,7 @@ typedef struct {
   double *vbias;
 } RBM;
 
-void RBM__construct(RBM*, int, int, int);
+void RBM__construct(RBM*, int, int, int, double**, double*, double*);
 void RBM__destruct(RBM*);
 void RBM_contrastive_divergence(RBM*, int*, double, int);
 void RBM_sample_h_given_v(RBM*, int*, double*, int*);

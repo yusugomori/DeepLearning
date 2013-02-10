@@ -35,7 +35,8 @@ double sigmoid(double x) {
 }
 
 
-void RBM__construct(RBM* this, int N, int n_visible, int n_hidden) {
+void RBM__construct(RBM* this, int N, int n_visible, int n_hidden, \
+                    double **W, double *hbias, double *vbias) {
   int i, j;
   double a = 1.0 / n_visible;
 
@@ -43,16 +44,30 @@ void RBM__construct(RBM* this, int N, int n_visible, int n_hidden) {
   this->n_visible = n_visible;
   this->n_hidden = n_hidden;
 
-  this->W = (double **)malloc(sizeof(double*) * n_hidden);
-  this->W[0] = (double *)malloc(sizeof(double) * n_visible * n_hidden);
-  for(i=0; i<n_hidden; i++) this->W[i] = this->W[0] + i * n_visible;
-  this->hbias = (double *)malloc(sizeof(double) * n_hidden);
-  this->vbias = (double *)malloc(sizeof(double) * n_visible);
+  if(W == NULL) {
+    this->W = (double **)malloc(sizeof(double*) * n_hidden);
+    this->W[0] = (double *)malloc(sizeof(double) * n_visible * n_hidden);
+    for(i=0; i<n_hidden; i++) this->W[i] = this->W[0] + i * n_visible;
 
-  for(i=0; i<n_hidden; i++) {
-    for(j=0; j<n_visible; j++) {
-      this->W[i][j] = uniform(-a, a);
+    for(i=0; i<n_hidden; i++) {
+      for(j=0; j<n_visible; j++) {
+        this->W[i][j] = uniform(-a, a);
+      }
     }
+  } else {
+    this->W = W;
+  }
+
+  if(hbias == NULL) {
+    this->hbias = (double *)malloc(sizeof(double) * n_hidden);
+  } else {
+    this->hbias = hbias;
+  }
+
+  if(vbias == NULL) {
+    this->vbias = (double *)malloc(sizeof(double) * n_visible);
+  } else {
+    this->vbias = vbias;
   }
 }
 
@@ -198,7 +213,7 @@ void test_rbm(void) {
 
   // construct RBM
   RBM rbm;
-  RBM__construct(&rbm, train_N, n_visible, n_hidden);
+  RBM__construct(&rbm, train_N, n_visible, n_hidden, NULL, NULL, NULL);
 
   // train
   for(epoch=0; epoch<training_epochs; epoch++) {

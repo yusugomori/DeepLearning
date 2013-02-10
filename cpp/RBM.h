@@ -7,11 +7,8 @@ public:
   double **W;
   double *hbias;
   double *vbias;
-  RBM(int, int, int);
+  RBM(int, int, int, double**, double*, double*);
   ~RBM();
-  double uniform(double, double);
-  int binomial(int, double);
-  double sigmoid(double);
   void contrastive_divergence(int*, double, int);
   void sample_h_given_v(int*, double*, int*);
   void sample_v_given_h(int*, double*, int*);

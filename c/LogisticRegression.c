@@ -19,6 +19,7 @@ void LogisticRegression__construct(LogisticRegression *this, int N, int n_in, in
 }
 
 void LogisticRegression__destruct(LogisticRegression *this) {
+  free(this->W[0]);
   free(this->W);
   free(this->b);
 }

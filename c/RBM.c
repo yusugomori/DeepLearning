@@ -72,6 +72,7 @@ void RBM__construct(RBM* this, int N, int n_visible, int n_hidden, \
 }
 
 void RBM__destruct(RBM* this) {
+  free(this->W[0]);
   free(this->W);
   free(this->hbias);
   free(this->vbias);

@@ -1,10 +1,10 @@
-# Deep Learning w/ Python
+# Deep Learning (Python, C/C++)
 
 ### Classes :
 
   - DBN:  Deep Belief Nets
 
-  - CDBN: Deep Belief Nets w/ continuous-valued inputs
+  - CDBN: Deep Belief Nets w/ continuous-valued inputs 
 
   - RBM:  Restricted Boltzmann Machine
 

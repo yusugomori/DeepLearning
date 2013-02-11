@@ -74,7 +74,13 @@ void DBN__construct(DBN* this, int N, \
 }
 
 void DBN__destruct(DBN* this) {
-  
+  int i;
+  for(i=0; i<this->n_layers; i++) {
+    HiddenLayer__destruct(&(this->sigmoid_layers[i]));
+    RBM__destruct(&(this->rbm_layers[i]));
+  }
+  free(this->sigmoid_layers);
+  free(this->rbm_layers);
 }
 
 void DBN_pretrain(DBN* this, int *input, double lr, int k, int epochs) {
@@ -561,6 +567,9 @@ void test_dbn(void) {
     }
     printf("\n");
   }
+
+  // destruct DBN
+  DBN__destruct(&dbn);
   
 }
 
@@ -568,6 +577,5 @@ void test_dbn(void) {
 
 int main(void) {
   test_dbn();
-  
   return 0;
 }

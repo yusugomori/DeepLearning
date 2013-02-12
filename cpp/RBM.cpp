@@ -47,12 +47,14 @@ RBM::RBM(int size, int n_v, int n_h, double **w, double *hb, double *vb) {
 
   if(hb == NULL) {
     hbias = new double[n_hidden];
+    for(int i=0; i<n_hidden; i++) hbias[i] = 0;
   } else {
     hbias = hb;
   }
 
   if(vb == NULL) {
     vbias = new double[n_visible];
+    for(int i=0; i<n_visible; i++) vbias[i] = 0;
   } else {
     vbias = vb;
   }

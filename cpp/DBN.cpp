@@ -278,12 +278,14 @@ RBM::RBM(int size, int n_v, int n_h, double **w, double *hb, double *vb) {
 
   if(hb == NULL) {
     hbias = new double[n_hidden];
+    for(int i=0; i<n_hidden; i++) hbias[i] = 0;
   } else {
     hbias = hb;
   }
 
   if(vb == NULL) {
     vbias = new double[n_visible];
+    for(int i=0; i<n_visible; i++) vbias[i] = 0;
   } else {
     vbias = vb;
   }
@@ -404,6 +406,13 @@ LogisticRegression::LogisticRegression(int size, int in, int out) {
   W = new double*[n_out];
   for(int i=0; i<n_out; i++) W[i] = new double[n_in];
   b = new double[n_out];
+
+  for(int i=0; i<n_out; i++) {
+    for(int j=0; j<n_in; j++) {
+      W[i][j] = 0;
+    }
+    b[i] = 0;
+  }
 }
 
 LogisticRegression::~LogisticRegression() {
@@ -418,6 +427,7 @@ void LogisticRegression::train(int *x, int *y, double lr) {
   double *dy = new double[n_out];
 
   for(int i=0; i<n_out; i++) {
+    p_y_given_x[i] = 0;
     for(int j=0; j<n_in; j++) {
       p_y_given_x[i] += W[i][j] * x[j];
     }
@@ -454,6 +464,7 @@ void LogisticRegression::softmax(double *x) {
 
 void LogisticRegression::predict(int *x, double *y) {
   for(int i=0; i<n_out; i++) {
+    y[i] = 0;
     for(int j=0; j<n_in; j++) {
       y[i] += W[i][j] * x[j];
     }

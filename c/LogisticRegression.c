@@ -7,7 +7,7 @@ void test_lr(void);
 
 
 void LogisticRegression__construct(LogisticRegression *this, int N, int n_in, int n_out) {
-  int i;
+  int i, j;
   this->N = N;
   this->n_in = n_in;
   this->n_out = n_out;
@@ -16,6 +16,13 @@ void LogisticRegression__construct(LogisticRegression *this, int N, int n_in, in
   this->W[0] = (double *)malloc(sizeof(double) * n_in * n_out);
   for(i=0; i<n_out; i++) this->W[i] = this->W[0] + i * n_in;
   this->b = (double *)malloc(sizeof(double) * n_out);
+
+  for(i=0; i<n_out; i++) {
+    for(j=0; j<n_in; j++) {
+      this->W[i][j] = 0;
+    }
+    this->b[i] = 0;
+  }
 }
 
 void LogisticRegression__destruct(LogisticRegression *this) {
@@ -30,6 +37,7 @@ void LogisticRegression_train(LogisticRegression *this, int *x, int *y, double l
   double *dy = (double *)malloc(sizeof(double) * this->n_out);
 
   for(i=0; i<this->n_out; i++) {
+    p_y_given_x[i] = 0;
     for(j=0; j<this->n_in; j++) {
       p_y_given_x[i] += this->W[i][j] * x[j];
     }
@@ -69,6 +77,7 @@ void LogisticRegression_predict(LogisticRegression *this, int *x, double *y) {
   int i,j;
 
   for(i=0; i<this->n_out; i++) {
+    y[i] = 0;
     for(j=0; j<this->n_in; j++) {
       y[i] += this->W[i][j] * x[j];
     }

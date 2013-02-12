@@ -60,12 +60,14 @@ void RBM__construct(RBM* this, int N, int n_visible, int n_hidden, \
 
   if(hbias == NULL) {
     this->hbias = (double *)malloc(sizeof(double) * n_hidden);
+    for(i=0; i<n_hidden; i++) this->hbias[i] = 0;
   } else {
     this->hbias = hbias;
   }
 
   if(vbias == NULL) {
     this->vbias = (double *)malloc(sizeof(double) * n_visible);
+    for(i=0; i<n_visible; i++) this->vbias[i] = 0;
   } else {
     this->vbias = vbias;
   }

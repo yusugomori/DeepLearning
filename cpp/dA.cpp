@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include "dA.h"
 using namespace std;
 
 
@@ -24,26 +25,6 @@ int binomial(int n, double p) {
 double sigmoid(double x) {
   return 1.0 / (1.0 + exp(-x));
 }
-
-
-
-class dA {
-
-public:
-  int N;
-  int n_visible;
-  int n_hidden;
-  double **W;
-  double *hbias;
-  double *vbias;
-  dA(int, int, int , double**, double*, double*);
-  ~dA();
-  void get_corrupted_input(int*, int*, double);
-  void get_hidden_values(int*, double*);
-  void get_reconstructed_input(double*, double*);
-  void train(int*, double, double);
-  void reconstruct(int*, double*);
-};
 
 
 dA::dA(int size, int n_v, int n_h, double **w, double *hb, double *vb) {

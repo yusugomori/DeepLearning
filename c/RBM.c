@@ -2,10 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "RBM.h"
-
-double uniform(double, double);
-int binomial(int, double);
-double sigmoid(double);
+#include "utils.h"
 
 
 void test_rbm(void);

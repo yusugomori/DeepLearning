@@ -150,9 +150,6 @@ void dA::train(int *x, double lr, double corruption_level) {
 void dA::reconstruct(int *x, double *z) {
   double *y = new double[n_hidden];
 
-  // for(int i=0; i<n_visible; i++) z[i] = 0;
-  for(int i=0; i<n_hidden; i++) y[i] = 0;
-
   get_hidden_values(x, y);
   get_reconstructed_input(y, z);
 
@@ -202,7 +199,7 @@ void test_dA() {
     {1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0}
   };
-  double reconstructed_X[2][20] = {0};
+  double reconstructed_X[2][20];
 
 
   // test

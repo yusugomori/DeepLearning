@@ -192,6 +192,7 @@ void SdA::predict(int *x, double *y) {
   }
   
   for(int i=0; i<log_layer->n_out; i++) {
+    y[i] = 0;
     for(int j=0; j<log_layer->n_in; j++) {
       y[i] += log_layer->W[i][j] * layer_input[j];
     }
@@ -469,9 +470,8 @@ void test_sda() {
   double pretrain_lr = 0.1;
   double corruption_level = 0.3;
   int pretraining_epochs = 1000;
-  int k = 1;
   double finetune_lr = 0.1;
-  int finetune_epochs = 200;
+  int finetune_epochs = 500;
 
   int train_N = 10;
   int test_N = 4;
@@ -531,7 +531,7 @@ void test_sda() {
   for(int i=0; i<test_N; i++) {
     sda.predict(test_X[i], test_Y[i]);
     for(int j=0; j<n_outs; j++) {
-      cout << test_Y[i][j] << " ";
+      printf("%.5f ", test_Y[i][j]);
     }
     cout << endl;
   }

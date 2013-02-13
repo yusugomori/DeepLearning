@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include "HiddenLayer.h"
-#include "RBM.h"
+#include "dA.h"
 #include "LogisticRegression.h"
-#include "DBN.h"
 #include "utils.h"
 
-void test_dbn(void);
+void test_sda(void);
 
 
 double uniform(double min, double max) {
@@ -33,10 +32,25 @@ double sigmoid(double x) {
   return 1.0 / (1.0 + exp(-x));
 }
 
+typedef struct {
+  int N;
+  int n_ins;
+  int *hidden_layer_sizes;
+  int n_outs;
+  int n_layers;
+  HiddenLayer *sigmoid_layers;
+  dA *dA_layers;
+  LogisticRegression log_layer;
+} SdA;
 
+void SdA__construct(SdA*, int, int, int*, int, int);
+void SdA__destruct(SdA*);
+void SdA_pretrain(SdA*, int*, double, double, int);
+void SdA_finetune(SdA*, int*, int*, double, int);
+void SdA_predict(SdA*, int*, double*);
 
-// DBN
-void DBN__construct(DBN* this, int N, \
+// SdA
+void SdA__construct(SdA* this, int N, \
                     int n_ins, int *hidden_layer_sizes, int n_outs, int n_layers) {
   int i, input_size;
 
@@ -47,7 +61,7 @@ void DBN__construct(DBN* this, int N, \
   this->n_layers = n_layers;
 
   this->sigmoid_layers = (HiddenLayer *)malloc(sizeof(HiddenLayer) * n_layers);
-  this->rbm_layers = (RBM *)malloc(sizeof(RBM) * n_layers);
+  this->dA_layers = (dA *)malloc(sizeof(dA) * n_layers);
 
   // construct multi-layer
   for(i=0; i<n_layers; i++) {
@@ -61,8 +75,8 @@ void DBN__construct(DBN* this, int N, \
     HiddenLayer__construct(&(this->sigmoid_layers[i]), \
                            N, input_size, hidden_layer_sizes[i], NULL, NULL);
 
-    // construct rbm_layer
-    RBM__construct(&(this->rbm_layers[i]), N, input_size, hidden_layer_sizes[i], \
+    // construct dA_layer
+    dA__construct(&(this->dA_layers[i]), N, input_size, hidden_layer_sizes[i], \
                    this->sigmoid_layers[i].W, this->sigmoid_layers[i].b, NULL);
     
   }
@@ -70,20 +84,19 @@ void DBN__construct(DBN* this, int N, \
   // layer for output using LogisticRegression
   LogisticRegression__construct(&(this->log_layer), \
                                 N, hidden_layer_sizes[n_layers-1], n_outs);
-  
 }
 
-void DBN__destruct(DBN* this) {
+void SdA__destruct(SdA* this) {
   int i;
   for(i=0; i<this->n_layers; i++) {
     HiddenLayer__destruct(&(this->sigmoid_layers[i]));
-    RBM__destruct(&(this->rbm_layers[i]));
+    dA__destruct(&(this->dA_layers[i]));
   }
   free(this->sigmoid_layers);
-  free(this->rbm_layers);
+  free(this->dA_layers);
 }
 
-void DBN_pretrain(DBN* this, int *input, double lr, int k, int epochs) {
+void SdA_pretrain(SdA* this, int *input, double lr, double corruption_level, int epochs) {
   int i, j, l, m, n, epoch;
   
   int *layer_input;
@@ -121,7 +134,7 @@ void DBN_pretrain(DBN* this, int *input, double lr, int k, int epochs) {
           }
         }
 
-        RBM_contrastive_divergence(&(this->rbm_layers[i]), layer_input, lr, k);
+        dA_train(&(this->dA_layers[i]), layer_input, lr, corruption_level);
       }
       
     }
@@ -131,7 +144,7 @@ void DBN_pretrain(DBN* this, int *input, double lr, int k, int epochs) {
   free(layer_input);
 }
 
-void DBN_finetune(DBN* this, int *input, int *label, double lr, int epochs) {
+void SdA_finetune(SdA* this, int *input, int *label, double lr, int epochs) {
   int i, j, m, n, epoch;
   
   int *layer_input;
@@ -175,7 +188,7 @@ void DBN_finetune(DBN* this, int *input, int *label, double lr, int epochs) {
   free(train_Y);
 }
 
-void DBN_predict(DBN* this, int *x, double *y) {
+void SdA_predict(SdA* this, int *x, double *y) {
   int i, j, k;
   double *layer_input;
   int prev_layer_input_size;
@@ -219,7 +232,6 @@ void DBN_predict(DBN* this, int *x, double *y) {
 
   free(layer_input);
 }
-
 
 
 // HiddenLayer
@@ -277,12 +289,12 @@ void HiddenLayer_sample_h_given_v(HiddenLayer* this, int *input, int *sample) {
 }
 
 
-// RBM
-void RBM__construct(RBM* this, int N, int n_visible, int n_hidden, \
-                    double **W, double *hbias, double *vbias) {
+// dA
+void dA__construct(dA* this, int N, int n_visible, int n_hidden, \
+                   double **W, double *hbias, double *vbias) {
   int i, j;
   double a = 1.0 / n_visible;
-
+  
   this->N = N;
   this->n_visible = n_visible;
   this->n_hidden = n_hidden;
@@ -316,118 +328,106 @@ void RBM__construct(RBM* this, int N, int n_visible, int n_hidden, \
   }
 }
 
-void RBM__destruct(RBM* this) {
+void dA__destruct(dA* this) {
   // free(this->W[0]);
   // free(this->W);
   // free(this->hbias);
   free(this->vbias);
 }
 
-void RBM_contrastive_divergence(RBM* this, int *input, double lr, int k) {
-  int i, j, step;
-  
-  double *ph_mean = (double *)malloc(sizeof(double) * this->n_hidden);
-  int *ph_sample = (int *)malloc(sizeof(int) * this->n_hidden);
-  double *nv_means = (double *)malloc(sizeof(double) * this->n_visible);
-  int *nv_samples = (int *)malloc(sizeof(int) * this->n_visible);
-  double *nh_means = (double *)malloc(sizeof(double) * this->n_hidden);
-  int *nh_samples = (int *)malloc(sizeof(int) * this->n_hidden);
-
-  /* CD-k */
-  RBM_sample_h_given_v(this, input, ph_mean, ph_sample);
-
-  for(step=0; step<k; step++) {
-    if(step == 0) {
-      RBM_gibbs_hvh(this, ph_sample, nv_means, nv_samples, nh_means, nh_samples);
+void dA_get_corrupted_input(dA* this, int *x, int *tilde_x, double p) {
+  int i;
+  for(i=0; i<this->n_visible; i++) {
+    if(x[i] == 0) {
+      tilde_x[i] = 0;
     } else {
-      RBM_gibbs_hvh(this, nh_samples, nv_means, nv_samples, nh_means, nh_samples);
+      tilde_x[i] = binomial(1, p);
     }
   }
+}
 
+// Encode
+void dA_get_hidden_values(dA* this, int *x, double *y) {
+  int i,j;
+  for(i=0; i<this->n_hidden; i++) {
+    y[i] = 0;
+    for(j=0; j<this->n_visible; j++) {
+      y[i] += this->W[i][j] * x[j];
+    }
+    y[i] += this->hbias[i];
+    y[i] = sigmoid(y[i]);
+  }
+}
+
+// Decode
+void dA_get_reconstructed_input(dA* this, double *y, double *z) {
+  int i, j;
+  for(i=0; i<this->n_visible; i++) {
+    z[i] = 0;
+    for(j=0; j<this->n_hidden; j++) {
+      z[i] += this->W[j][i] * y[j];
+    }
+    z[i] += this->vbias[i];
+    z[i] = sigmoid(z[i]);
+  }
+}
+
+
+void dA_train(dA* this, int *x, double lr, double corruption_level) {
+  int i, j;
+  
+  int *tilde_x = (int *)malloc(sizeof(int) * this->n_visible);
+  double *y = (double *)malloc(sizeof(double) * this->n_hidden);
+  double *z = (double *)malloc(sizeof(double) * this->n_visible);
+
+  double *L_vbias = (double *)malloc(sizeof(double) * this->n_visible);
+  double *L_hbias = (double *)malloc(sizeof(double) * this->n_hidden);
+
+  double p = 1 - corruption_level;
+
+  dA_get_corrupted_input(this, x, tilde_x, p);
+  dA_get_hidden_values(this, tilde_x, y);
+  dA_get_reconstructed_input(this, y, z);
+
+  // vbias
+  for(i=0; i<this->n_visible; i++) {
+    L_vbias[i] = x[i] - z[i];
+    this->vbias[i] += lr * L_vbias[i] / this->N;
+  }
+
+  // hbias
+  for(i=0; i<this->n_hidden; i++) {
+    L_hbias[i] = 0;
+    for(j=0; j<this->n_visible; j++) {
+      L_hbias[i] += this->W[i][j] * L_vbias[j];
+    }
+    L_hbias[i] *= y[i] * (1 - y[i]);
+
+    this->hbias[i] += lr * L_hbias[i] / this->N;
+  }
+
+  // W
   for(i=0; i<this->n_hidden; i++) {
     for(j=0; j<this->n_visible; j++) {
-      this->W[i][j] += lr * (ph_sample[i] * input[j] - nh_means[i] * nv_samples[j]) / this->N;
+      this->W[i][j] += lr * (L_hbias[i] * tilde_x[j] + L_vbias[j] * y[i]) / this->N;
     }
-    this->hbias[i] += lr * (ph_sample[i] - nh_means[i]) / this->N;
   }
 
-  for(i=0; i<this->n_visible; i++) {
-    this->vbias[i] += lr * (input[i] - nv_samples[i]) / this->N;
-  }
-  
-
-  free(ph_mean);
-  free(ph_sample);
-  free(nv_means);
-  free(nv_samples);
-  free(nh_means);
-  free(nh_samples);
+  free(L_hbias);
+  free(L_vbias);
+  free(z);
+  free(y);
+  free(tilde_x);
 }
 
-
-void RBM_sample_h_given_v(RBM* this, int *v0_sample, double *mean, int *sample) {
+void dA_reconstruct(dA* this, int *x, double *z) {
   int i;
-  for(i=0; i<this->n_hidden; i++) {
-    mean[i] = RBM_propup(this, v0_sample, this->W[i], this->hbias[i]);
-    sample[i] = binomial(1, mean[i]);
-  }
-}
+  double *y = (double *)malloc(sizeof(double) * this->n_hidden);
 
-void RBM_sample_v_given_h(RBM* this, int *h0_sample, double *mean, int *sample) {
-  int i;
-  for(i=0; i<this->n_visible; i++) {
-    mean[i] = RBM_propdown(this, h0_sample, i, this->vbias[i]);
-    sample[i] = binomial(1, mean[i]);
-  }
-}
+  dA_get_hidden_values(this, x, y);
+  dA_get_reconstructed_input(this, y, z);
 
-double RBM_propup(RBM* this, int *v, double *w, double b) {
-  int j;
-  double pre_sigmoid_activation = 0.0;
-  for(j=0; j<this->n_visible; j++) {
-    pre_sigmoid_activation += w[j] * v[j];
-  }
-  pre_sigmoid_activation += b;
-  return sigmoid(pre_sigmoid_activation);
-}
-
-double RBM_propdown(RBM* this, int *h, int i, double b) {
-  int j;
-  double pre_sigmoid_activation = 0.0;
-
-  for(j=0; j<this->n_hidden; j++) {
-    pre_sigmoid_activation += this->W[j][i] * h[j];
-  }
-  pre_sigmoid_activation += b;
-  return sigmoid(pre_sigmoid_activation);
-}
-
-void RBM_gibbs_hvh(RBM* this, int *h0_sample, double *nv_means, int *nv_samples, \
-                   double *nh_means, int *nh_samples) {
-  RBM_sample_v_given_h(this, h0_sample, nv_means, nv_samples);
-  RBM_sample_h_given_v(this, nv_samples, nh_means, nh_samples);
-}
-
-void RBM_reconstruct(RBM* this, int *v, double *reconstructed_v) {
-  int i, j;
-  double *h = (double *)malloc(sizeof(double) * this->n_hidden);
-  double pre_sigmoid_activation;
-
-  for(i=0; i<this->n_hidden; i++) {
-    h[i] = RBM_propup(this, v, this->W[i], this->hbias[i]);
-  }
-
-  for(i=0; i<this->n_visible; i++) {
-    pre_sigmoid_activation = 0.0;
-    for(j=0; j<this->n_hidden; j++) {
-      pre_sigmoid_activation += this->W[j][i] * h[j];
-    }
-    pre_sigmoid_activation += this->vbias[i];
-
-    reconstructed_v[i] = sigmoid(pre_sigmoid_activation);
-  }
-
-  free(h);
+  free(y);
 }
 
 
@@ -514,81 +514,88 @@ void LogisticRegression_predict(LogisticRegression *this, int *x, double *y) {
 }
 
 
-void test_dbn(void) {
+void test_sda(void) {
   srand(0);
 
   int i, j;
-  
+
   double pretrain_lr = 0.1;
+  double corruption_level = 0.3;
   int pretraining_epochs = 1000;
-  int k = 1;
   double finetune_lr = 0.1;
   int finetune_epochs = 500;
 
-  int train_N = 6;
+  int train_N = 10;
   int test_N = 4;
-  int n_ins = 6;
+  int n_ins = 28;
   int n_outs = 2;
-  int hidden_layer_sizes[] = {3, 3};
+  int hidden_layer_sizes[] = {15, 15};
   int n_layers = sizeof(hidden_layer_sizes) / sizeof(hidden_layer_sizes[0]);
 
-
   // training data
-  int train_X[6][6] = {
-    {1, 1, 1, 0, 0, 0},
-    {1, 0, 1, 0, 0, 0},
-    {1, 1, 1, 0, 0, 0},
-    {0, 0, 1, 1, 1, 0},
-    {0, 0, 1, 1, 0, 0},
-    {0, 0, 1, 1, 1, 0}
+  int train_X[10][28] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1}
   };
 
-  int train_Y[6][2] = {
+  int train_Y[10][2] = {
     {1, 0},
     {1, 0},
     {1, 0},
+    {1, 0},
+    {1, 0},
+    {0, 1},
+    {0, 1},
     {0, 1},
     {0, 1},
     {0, 1}
   };
 
-  // construct DBN
-  DBN dbn;
-  DBN__construct(&dbn, train_N, n_ins, hidden_layer_sizes, n_outs, n_layers);
+  // construct SdA
+  SdA sda;
+  SdA__construct(&sda, train_N, n_ins, hidden_layer_sizes, n_outs, n_layers);
 
   // pretrain
-  DBN_pretrain(&dbn, *train_X, pretrain_lr, k, pretraining_epochs);
+  SdA_pretrain(&sda, *train_X, pretrain_lr, corruption_level, pretraining_epochs);
 
   // finetune
-  DBN_finetune(&dbn, *train_X, *train_Y, finetune_lr, finetune_epochs);
+  SdA_finetune(&sda, *train_X, *train_Y, finetune_lr, finetune_epochs);
 
   // test data
-  int test_X[4][6] = {
-    {1, 1, 0, 0, 0, 0},
-    {1, 1, 1, 1, 0, 0},
-    {0, 0, 0, 1, 1, 0},
-    {0, 0, 1, 1, 1, 0}
+  int test_X[4][28] = {
+    {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1}
   };
 
-  double test_Y[4][2];
+  double test_Y[4][28];
+
 
   // test
   for(i=0; i<test_N; i++) {
-    DBN_predict(&dbn, test_X[i], test_Y[i]);
+    SdA_predict(&sda, test_X[i], test_Y[i]);
     for(j=0; j<n_outs; j++) {
       printf("%.5f ", test_Y[i][j]);
     }
     printf("\n");
   }
 
-  // destruct DBN
-  DBN__destruct(&dbn);
   
+  // destruct DBN
+  SdA__destruct(&sda);
 }
 
 
-
 int main(void) {
-  test_dbn();
+  test_sda();
   return 0;
 }

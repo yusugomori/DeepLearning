@@ -194,6 +194,7 @@ void DBN::predict(int *x, double *y) {
   }
   
   for(int i=0; i<log_layer->n_out; i++) {
+    y[i] = 0;
     for(int j=0; j<log_layer->n_in; j++) {
       y[i] += log_layer->W[i][j] * layer_input[j];
     }

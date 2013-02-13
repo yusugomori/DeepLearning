@@ -116,7 +116,6 @@ class SdA(object):
         
         for i in xrange(self.n_layers):
             sigmoid_layer = self.sigmoid_layers[i]
-            # rbm_layer = self.rbm_layers[i]
             layer_input = sigmoid_layer.output(input=layer_input)
 
         out = self.log_layer.predict(layer_input)
@@ -153,7 +152,7 @@ def test_SdA(pretrain_lr=0.1, pretraining_epochs=1000, corruption_level=0.3, \
 
     # construct SdA
     sda = SdA(input=x, label=y, \
-              n_ins=20, hidden_layer_sizes=[10, 10], n_outs=2, numpy_rng=rng)
+              n_ins=20, hidden_layer_sizes=[15, 15], n_outs=2, numpy_rng=rng)
 
     # pre-training
     sda.pretrain(lr=pretrain_lr, corruption_level=corruption_level, epochs=pretraining_epochs)

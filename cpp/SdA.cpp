@@ -3,6 +3,7 @@
 #include "HiddenLayer.h"
 #include "dA.h"
 #include "LogisticRegression.h"
+#include "SdA.h"
 using namespace std;
 
 double uniform(double min, double max) {
@@ -27,25 +28,6 @@ double sigmoid(double x) {
   return 1.0 / (1.0 + exp(-x));
 }
 
-
-
-class SdA {
-
-public:
-  int N;
-  int n_ins;
-  int *hidden_layer_sizes;
-  int n_outs;
-  int n_layers;
-  HiddenLayer **sigmoid_layers;
-  dA **dA_layers;
-  LogisticRegression *log_layer;
-  SdA(int, int, int*, int, int);
-  ~SdA();
-  void pretrain(int*, double, double, int);
-  void finetune(int*, int*, double, int);
-  void predict(int*, double*);
-};
 
 // SdA
 SdA::SdA(int size, int n_i, int *hls, int n_o, int n_l) {

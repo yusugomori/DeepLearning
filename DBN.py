@@ -136,7 +136,6 @@ class DBN(object):
         
         for i in xrange(self.n_layers):
             sigmoid_layer = self.sigmoid_layers[i]
-            # rbm_layer = self.rbm_layers[i]
             layer_input = sigmoid_layer.output(input=layer_input)
 
         out = self.log_layer.predict(layer_input)

@@ -163,7 +163,7 @@ void test_dA() {
   
   double learning_rate = 0.1;
   double corruption_level = 0.3;
-  int training_epochs = 50;
+  int training_epochs = 100;
 
   int train_N = 10;
   int test_N = 2;

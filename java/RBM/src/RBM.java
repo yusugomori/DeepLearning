@@ -7,7 +7,7 @@ public class RBM {
 	double[][] W;
 	double[] hbias;
 	double[] vbias;
-	Random rng;
+	public Random rng;
 	
 	public double uniform(double min, double max) {
 		return rng.nextDouble() * (max - min) + min;

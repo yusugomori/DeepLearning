@@ -1,4 +1,4 @@
-# Deep Learning (Python, C/C++)
+# Deep Learning (Python, C/C++, Java)
 
 ### Classes :
 

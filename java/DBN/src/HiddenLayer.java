@@ -6,7 +6,7 @@ public class HiddenLayer {
 	public int n_out;
 	public double[][] W;
 	public double[] b;
-	Random rng;
+	public Random rng;
 	
 	public double uniform(double min, double max) {
 		return rng.nextDouble() * (max - min) + min;

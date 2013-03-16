@@ -6,10 +6,10 @@ public class DBN {
 	public int[] hidden_layer_sizes;
 	public int n_outs;
 	public int n_layers;
-	HiddenLayer[] sigmoid_layers;
-	RBM[] rbm_layers;
-	LogisticRegression log_layer;
-	Random rng;
+	public HiddenLayer[] sigmoid_layers;
+	public RBM[] rbm_layers;
+	public LogisticRegression log_layer;
+	public Random rng;
 
 	public static double sigmoid(double x) {
 		return 1.0 / (1.0 + Math.pow(Math.E, -x));

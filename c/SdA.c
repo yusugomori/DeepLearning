@@ -53,7 +53,7 @@ void SdA__construct(SdA* this, int N, \
     if(i == 0) {
       input_size = n_ins;
     } else {
-      input_size = hidden_layer_sizes[i - 1];
+      input_size = hidden_layer_sizes[i-1];
     }
 
     // construct sigmoid_layer

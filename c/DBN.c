@@ -54,7 +54,7 @@ void DBN__construct(DBN* this, int N, \
     if(i == 0) {
       input_size = n_ins;
     } else {
-      input_size = hidden_layer_sizes[i - 1];
+      input_size = hidden_layer_sizes[i-1];
     }
 
     // construct sigmoid_layer
@@ -135,7 +135,7 @@ void DBN_finetune(DBN* this, int *input, int *label, double lr, int epochs) {
   int i, j, m, n, epoch;
   
   int *layer_input;
-  int prev_layer_input_size;
+  // int prev_layer_input_size;
   int *prev_layer_input;
 
   int *train_X = (int *)malloc(sizeof(int) * this->n_ins);
@@ -178,7 +178,7 @@ void DBN_finetune(DBN* this, int *input, int *label, double lr, int epochs) {
 void DBN_predict(DBN* this, int *x, double *y) {
   int i, j, k;
   double *layer_input;
-  int prev_layer_input_size;
+  // int prev_layer_input_size;
   double *prev_layer_input;
 
   double linear_output;

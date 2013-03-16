@@ -48,7 +48,7 @@ DBN::DBN(int size, int n_i, int *hls, int n_o, int n_l) {
     if(i == 0) {
       input_size = n_ins;
     } else {
-      input_size = hidden_layer_sizes[i - 1];
+      input_size = hidden_layer_sizes[i-1];
     }
 
     // construct sigmoid_layer
@@ -123,7 +123,7 @@ void DBN::pretrain(int *input, double lr, int k, int epochs) {
 
 void DBN::finetune(int *input, int *label, double lr, int epochs) {
   int *layer_input;
-  int prev_layer_input_size;
+  // int prev_layer_input_size;
   int *prev_layer_input;
 
   int *train_X = new int[n_ins];
@@ -164,7 +164,7 @@ void DBN::finetune(int *input, int *label, double lr, int epochs) {
 
 void DBN::predict(int *x, double *y) {
   double *layer_input;
-  int prev_layer_input_size;
+  // int prev_layer_input_size;
   double *prev_layer_input;
 
   double linear_output;

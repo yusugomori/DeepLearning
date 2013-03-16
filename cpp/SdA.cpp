@@ -47,7 +47,7 @@ SdA::SdA(int size, int n_i, int *hls, int n_o, int n_l) {
     if(i == 0) {
       input_size = n_ins;
     } else {
-      input_size = hidden_layer_sizes[i - 1];
+      input_size = hidden_layer_sizes[i-1];
     }
 
     // construct sigmoid_layer

@@ -163,7 +163,7 @@ public class RBM {
 
 	
 	
-	public static void main(String[] arg) {
+	private static void test_rbm() {
 		Random rng = new Random(123);
 
 		double learning_rate = 0.1;
@@ -212,4 +212,9 @@ public class RBM {
 			System.out.println();
 		}
 	}
+	
+	public static void main(String[] args) {
+		test_rbm();
+	}
+	
 }

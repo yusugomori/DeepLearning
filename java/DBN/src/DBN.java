@@ -150,7 +150,7 @@ public class DBN {
 		log_layer.softmax(y);
 	}
 	
-	public static void main(String[] arg) {
+	private static void test_dbn() {
 		Random rng = new Random(123);
 		
 		double pretrain_lr = 0.1;
@@ -214,5 +214,9 @@ public class DBN {
 			}
 			System.out.println();
 		}
+	}
+	
+	public static void main(String[] args) {
+		test_dbn();
 	}
 }

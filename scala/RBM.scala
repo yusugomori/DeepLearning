@@ -1,3 +1,6 @@
+// $ scalac RBM.scala
+// $ scala RBM
+
 import scala.util.Random
 import scala.math
 
@@ -159,57 +162,61 @@ class RBM(val N: Int, val n_visible: Int, val n_hidden: Int,
 }
 
 
-def test_rbm() {
-  val rng: Random = new Random(123)
+object RBM {
+  def test_rbm() {
+    val rng: Random = new Random(123)
 
-  var learning_rate: Double = 0.1
-  val training_epochs: Int = 1000
-  val k: Int = 1
+    var learning_rate: Double = 0.1
+    val training_epochs: Int = 1000
+    val k: Int = 1
 
-  val train_N: Int = 6;
-  val test_N: Int = 2
-  val n_visible: Int = 6
-  val n_hidden: Int = 3
+    val train_N: Int = 6;
+    val test_N: Int = 2
+    val n_visible: Int = 6
+    val n_hidden: Int = 3
 
-  val train_X: Array[Array[Int]] = Array(
-    Array(1, 1, 1, 0, 0, 0),
-    Array(1, 0, 1, 0, 0, 0),
-    Array(1, 1, 1, 0, 0, 0),
-    Array(0, 0, 1, 1, 1, 0),
-    Array(0, 0, 1, 0, 1, 0),
-    Array(0, 0, 1, 1, 1, 0)
-  )
+    val train_X: Array[Array[Int]] = Array(
+      Array(1, 1, 1, 0, 0, 0),
+      Array(1, 0, 1, 0, 0, 0),
+      Array(1, 1, 1, 0, 0, 0),
+      Array(0, 0, 1, 1, 1, 0),
+      Array(0, 0, 1, 0, 1, 0),
+      Array(0, 0, 1, 1, 1, 0)
+    )
 
 
-  val rbm: RBM = new RBM(train_N, n_visible, n_hidden, rng=rng)
+    val rbm: RBM = new RBM(train_N, n_visible, n_hidden, rng=rng)
 
-  var i: Int = 0
-  var j: Int = 0
+    var i: Int = 0
+    var j: Int = 0
 
-  // train
-  var epoch: Int = 0
-  for(epoch <- 0 until training_epochs) {
-    for(i <- 0 until train_N) {
-      rbm.contrastive_divergence(train_X(i), learning_rate, k)
+    // train
+    var epoch: Int = 0
+    for(epoch <- 0 until training_epochs) {
+      for(i <- 0 until train_N) {
+        rbm.contrastive_divergence(train_X(i), learning_rate, k)
+      }
     }
+
+    // test data
+    val test_X: Array[Array[Int]] = Array(
+      Array(1, 1, 0, 0, 0, 0),
+      Array(0, 0, 0, 1, 1, 0)
+    )
+
+    val reconstructed_X: Array[Array[Double]] = Array.ofDim[Double](test_N, n_visible)
+    for(i <- 0 until test_N) {
+      rbm.reconstruct(test_X(i), reconstructed_X(i))
+      for(j <- 0 until n_visible) {
+        printf("%.5f ", reconstructed_X(i)(j))
+      }
+      println()
+    }
+
   }
 
-  // test data
-  val test_X: Array[Array[Int]] = Array(
-    Array(1, 1, 0, 0, 0, 0),
-    Array(0, 0, 0, 1, 1, 0)
-  )
-
-  val reconstructed_X: Array[Array[Double]] = Array.ofDim[Double](test_N, n_visible)
-  for(i <- 0 until test_N) {
-    rbm.reconstruct(test_X(i), reconstructed_X(i))
-    for(j <- 0 until n_visible) {
-      printf("%.5f", reconstructed_X(i)(j))
-    }
-    println()
+  def main(args: Array[String]) {
+    test_rbm()
   }
 
 }
-
-test_rbm()
-

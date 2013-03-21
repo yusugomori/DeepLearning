@@ -65,7 +65,7 @@ public class LogisticRegression {
 		softmax(y);
 	}	
 	
-	public static void main(String[] arg) {
+	private static void test_lr() {
 		double learning_rate = 0.1;
 		double n_epochs = 500;
 		
@@ -120,5 +120,9 @@ public class LogisticRegression {
 			}
 			System.out.println();
 		}
+	}
+	
+	public static void main(String[] args) {
+		test_lr();
 	}
 }

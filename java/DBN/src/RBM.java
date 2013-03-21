@@ -4,9 +4,9 @@ public class RBM {
 	public int N;
 	public int n_visible;
 	public int n_hidden;
-	double[][] W;
-	double[] hbias;
-	double[] vbias;
+	public double[][] W;
+	public double[] hbias;
+	public double[] vbias;
 	public Random rng;
 	
 	public double uniform(double min, double max) {

@@ -4,9 +4,9 @@ public class RBM {
 	public int N;
 	public int n_visible;
 	public int n_hidden;
-	double[][] W;
-	double[] hbias;
-	double[] vbias;
+	public double[][] W;
+	public double[] hbias;
+	public double[] vbias;
 	public Random rng;
 	
 	public double uniform(double min, double max) {
@@ -207,7 +207,7 @@ public class RBM {
 		for(int i=0; i<test_N; i++) {
 			rbm.reconstruct(test_X[i], reconstructed_X[i]);
 			for(int j=0; j<n_visible; j++) {
-				System.out.printf("%.5f", reconstructed_X[i][j]);
+				System.out.printf("%.5f ", reconstructed_X[i][j]);
 			}
 			System.out.println();
 		}

@@ -1,3 +1,6 @@
+// $ scalac dA.scala
+// $ scala dA
+
 import scala.util.Random
 import scala.math
 

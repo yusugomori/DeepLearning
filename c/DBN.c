@@ -190,8 +190,9 @@ void DBN_predict(DBN* this, int *x, double *y) {
   for(i=0; i<this->n_layers; i++) {
     layer_input = (double *)malloc(sizeof(double) * this->sigmoid_layers[i].n_out);
 
-    linear_output = 0.0;
     for(k=0; k<this->sigmoid_layers[i].n_out; k++) {
+      linear_output = 0.0;
+
       for(j=0; j<this->sigmoid_layers[i].n_in; j++) {
         linear_output += this->sigmoid_layers[i].W[k][j] * prev_layer_input[j];
       }

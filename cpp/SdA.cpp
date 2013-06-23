@@ -174,8 +174,9 @@ void SdA::predict(int *x, double *y) {
   for(int i=0; i<n_layers; i++) {
     layer_input = new double[sigmoid_layers[i]->n_out];
 
-    linear_output = 0.0;
     for(int k=0; k<sigmoid_layers[i]->n_out; k++) {
+      linear_output = 0.0;
+
       for(int j=0; j<sigmoid_layers[i]->n_in; j++) {
         linear_output += sigmoid_layers[i]->W[k][j] * prev_layer_input[j];
       }

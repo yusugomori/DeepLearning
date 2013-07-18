@@ -86,7 +86,8 @@ class RBM(val N: Int, val n_visible: Int, val n_hidden: Int,
     var j: Int = 0
     for(i <- 0 until n_hidden) {
       for(j <- 0 until n_visible) {
-        W(i)(j) += lr * (ph_sample(i) * input(j) - nh_means(i) * nv_samples(j)) / N
+        // W(i)(j) += lr * (ph_sample(i) * input(j) - nh_means(i) * nv_samples(j)) / N
+        W(i)(j) += lr * (ph_mean(i) * input(j) - nh_means(i) * nv_samples(j)) / N
       }
       hbias(i) += lr * (ph_sample(i) - nh_means(i)) / N
     }

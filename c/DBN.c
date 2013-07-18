@@ -347,7 +347,8 @@ void RBM_contrastive_divergence(RBM* this, int *input, double lr, int k) {
 
   for(i=0; i<this->n_hidden; i++) {
     for(j=0; j<this->n_visible; j++) {
-      this->W[i][j] += lr * (ph_sample[i] * input[j] - nh_means[i] * nv_samples[j]) / this->N;
+      // this->W[i][j] += lr * (ph_sample[i] * input[j] - nh_means[i] * nv_samples[j]) / this->N;
+      this->W[i][j] += lr * (ph_mean[i] * input[j] - nh_means[i] * nv_samples[j]) / this->N;
     }
     this->hbias[i] += lr * (ph_sample[i] - nh_means[i]) / this->N;
   }

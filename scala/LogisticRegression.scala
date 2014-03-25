@@ -113,7 +113,7 @@ object LogisticRegression {
       Array(0, 0, 1, 1, 1, 0)
     )
 
-    val test_Y: Array[Array[Double]] = Array.ofDim[Double](test_N, n_in)
+    val test_Y: Array[Array[Double]] = Array.ofDim[Double](test_N, n_out)
 
     // test
     var j: Int = 0

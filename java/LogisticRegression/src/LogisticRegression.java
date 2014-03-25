@@ -109,7 +109,7 @@ public class LogisticRegression {
 			{0, 0, 1, 1, 1, 0}
 		};
 		
-		double[][] test_Y = new double[test_N][n_in];
+		double[][] test_Y = new double[test_N][n_out];
 		
 		
 		// test

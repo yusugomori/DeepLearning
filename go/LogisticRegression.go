@@ -113,38 +113,38 @@ func test_lr() {
 	
 	// construct LogisticRegression
 	var classifier LogisticRegression
-	LogisticRegression__construct(&classifier, train_N, n_in, n_out)
+  LogisticRegression__construct(&classifier, train_N, n_in, n_out)
 
-	// train
-	for epoch := 0; epoch < n_epochs; epoch++ {
-		for i := 0; i < train_N; i++ {
-			LogisticRegression_train(&classifier, train_X[i], train_Y[i], learning_rate)
-		}
-	}
-	
-	// test data
-	test_X := [][]int {
+  // train
+  for epoch := 0; epoch < n_epochs; epoch++ {
+    for i := 0; i < train_N; i++ {
+      LogisticRegression_train(&classifier, train_X[i], train_Y[i], learning_rate)
+    }
+  }
+  
+  // test data
+  test_X := [][]int {
     {1, 0, 1, 0, 0, 0},
     {0, 0, 1, 1, 1, 0},
-	}
-	
-	test_Y := make([][]float64, test_N)
-	for i := 0; i < test_N; i++ { test_Y[i] = make([]float64, n_out) }
+  }
+  
+  test_Y := make([][]float64, test_N)
+  for i := 0; i < test_N; i++ { test_Y[i] = make([]float64, n_out) }
 
 
-	// test
-	for i := 0; i < test_N; i++ {
-		LogisticRegression_predict(&classifier, test_X[i], test_Y[i])
-		for j := 0; j < n_out; j++ {
-			fmt.Printf("%f ", test_Y[i][j])
-		}
-		fmt.Printf("\n")
-	}
-	
+  // test
+  for i := 0; i < test_N; i++ {
+    LogisticRegression_predict(&classifier, test_X[i], test_Y[i])
+    for j := 0; j < n_out; j++ {
+      fmt.Printf("%f ", test_Y[i][j])
+    }
+    fmt.Printf("\n")
+  }
+  
 }
 
 
 func main() {
-	test_lr()
+  test_lr()
 }
 

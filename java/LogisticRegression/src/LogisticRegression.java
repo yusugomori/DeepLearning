@@ -67,7 +67,7 @@ public class LogisticRegression {
 	
 	private static void test_lr() {
 		double learning_rate = 0.1;
-		double n_epochs = 500;
+		int n_epochs = 500;
 		
 		int train_N = 6;
 		int test_N = 2;

@@ -86,30 +86,12 @@ void test_lr() {
   srand(0);
   
   double learning_rate = 0.1;
-  double n_epochs = 500;
+  int n_epochs = 500;
 
   int train_N = 6;
   int test_N = 2;
   int n_in = 6;
   int n_out = 2;
-  // int **train_X;
-  // int **train_Y;
-  // int **test_X;
-  // double **test_Y;
-
-  // train_X = new int*[train_N];
-  // train_Y = new int*[train_N];
-  // for(i=0; i<train_N; i++){
-  //   train_X[i] = new int[n_in];
-  //   train_Y[i] = new int[n_out];
-  // };
-
-  // test_X = new int*[test_N];
-  // test_Y = new double*[test_N];
-  // for(i=0; i<test_N; i++){
-  //   test_X[i] = new int[n_in];
-  //   test_Y[i] = new double[n_out];
-  // }
 
 
   // training data

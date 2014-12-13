@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"fmt"
 	"math/rand"
 	u "./utils"
@@ -186,10 +185,8 @@ func test_dA() {
 		}
 		fmt.Printf("\n")
 	}
-	os.Exit(0)
 }
 
 func main() {
 	test_dA()
-	
 }

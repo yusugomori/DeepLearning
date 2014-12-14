@@ -207,7 +207,7 @@ func test_dbn() {
 	DBN_pretrain(&dbn, train_X, pretrain_lr, k, pretraining_epochs)
 
 	// finetune
-	DBN_finetune(&dbn, train_X, train_Y, finstune_lr, finetune_epochs)
+	DBN_finetune(&dbn, train_X, train_Y, finetune_lr, finetune_epochs)
 
 	// test data
 	test_X := [][]int {

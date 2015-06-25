@@ -16,7 +16,7 @@ class MLP(object):
         if rng is None:
             rng = numpy.random.RandomState(1234)
 
-        # construct hidden_layer (tanh, sigmoid, etc...)
+        # construct hidden_layer (tanh or sigmoid so far)
         self.hidden_layer = HiddenLayer(input=self.x,
                                         n_in=n_in,
                                         n_out=n_hidden,
@@ -31,8 +31,6 @@ class MLP(object):
 
     def train(self):
         layer_input = self.hidden_layer.forward()
-        # print self.hidden_layer.W
-
         self.log_layer.train(input=layer_input)
         self.hidden_layer.backward(prev_layer=self.log_layer)
         

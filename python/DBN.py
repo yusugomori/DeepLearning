@@ -1,19 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-'''
- Deep Belief Nets (DBN)
-
- References :
-   - Y. Bengio, P. Lamblin, D. Popovici, H. Larochelle: Greedy Layer-Wise
-   Training of Deep Networks, Advances in Neural Information Processing
-   Systems 19, 2007
-
-
-   - DeepLearningTutorials
-   https://github.com/lisa-lab/DeepLearningTutorials
-
-'''
 
 import sys
 import numpy
@@ -26,7 +11,7 @@ from utils import *
 class DBN(object):
     def __init__(self, input=None, label=None,\
                  n_ins=2, hidden_layer_sizes=[3, 3], n_outs=2,\
-                 numpy_rng=None):
+                 rng=None):
         
         self.x = input
         self.y = label
@@ -35,8 +20,8 @@ class DBN(object):
         self.rbm_layers = []
         self.n_layers = len(hidden_layer_sizes)  # = len(self.rbm_layers)
 
-        if numpy_rng is None:
-            numpy_rng = numpy.random.RandomState(1234)
+        if rng is None:
+            rng = numpy.random.RandomState(1234)
 
         
         assert self.n_layers > 0
@@ -60,7 +45,7 @@ class DBN(object):
             sigmoid_layer = HiddenLayer(input=layer_input,
                                         n_in=input_size,
                                         n_out=hidden_layer_sizes[i],
-                                        numpy_rng=numpy_rng,
+                                        rng=rng,
                                         activation=sigmoid)
             self.sigmoid_layers.append(sigmoid_layer)
 
@@ -99,21 +84,6 @@ class DBN(object):
                 # cost = rbm.get_reconstruction_cross_entropy()
                 # print >> sys.stderr, \
                 #        'Pre-training layer %d, epoch %d, cost ' %(i, epoch), cost
-
-    # def pretrain(self, lr=0.1, k=1, epochs=100):
-    #     # pre-train layer-wise
-    #     for i in xrange(self.n_layers):
-    #         rbm = self.rbm_layers[i]
-            
-    #         for epoch in xrange(epochs):
-    #             layer_input = self.x
-    #             for j in xrange(i):
-    #                 layer_input = self.sigmoid_layers[j].sample_h_given_v(layer_input)
-            
-    #             rbm.contrastive_divergence(lr=lr, k=k, input=layer_input)
-    #             # cost = rbm.get_reconstruction_cross_entropy()
-    #             # print >> sys.stderr, \
-    #             #        'Pre-training layer %d, epoch %d, cost ' %(i, epoch), cost
 
 
     def finetune(self, lr=0.1, epochs=100):
@@ -158,12 +128,11 @@ def test_dbn(pretrain_lr=0.1, pretraining_epochs=1000, k=1, \
                      [0, 1],
                      [0, 1],
                      [0, 1]])
-
     
     rng = numpy.random.RandomState(123)
 
     # construct DBN
-    dbn = DBN(input=x, label=y, n_ins=6, hidden_layer_sizes=[3, 3], n_outs=2, numpy_rng=rng)
+    dbn = DBN(input=x, label=y, n_ins=6, hidden_layer_sizes=[3, 3], n_outs=2, rng=rng)
 
     # pre-training (TrainUnsupervisedDBN)
     dbn.pretrain(lr=pretrain_lr, k=1, epochs=pretraining_epochs)

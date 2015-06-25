@@ -1,19 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
-"""
- Stacked Denoising Autoencoders (SdA)
-
- References :
-   - P. Vincent, H. Larochelle, Y. Bengio, P.A. Manzagol: Extracting and
-   Composing Robust Features with Denoising Autoencoders, ICML' 08, 1096-1103,
-   2008
-
-   - DeepLearningTutorials
-   https://github.com/lisa-lab/DeepLearningTutorials
-   
-"""
 
 import sys
 import numpy
@@ -26,7 +11,7 @@ from utils import *
 class SdA(object):
     def __init__(self, input=None, label=None,\
                  n_ins=2, hidden_layer_sizes=[3, 3], n_outs=2,\
-                 numpy_rng=None):
+                 rng=None):
         
         self.x = input
         self.y = label
@@ -35,8 +20,8 @@ class SdA(object):
         self.dA_layers = []
         self.n_layers = len(hidden_layer_sizes)  # = len(self.rbm_layers)
 
-        if numpy_rng is None:
-            numpy_rng = numpy.random.RandomState(1234)
+        if rng is None:
+            rng = numpy.random.RandomState(1234)
 
         
         assert self.n_layers > 0
@@ -60,7 +45,7 @@ class SdA(object):
             sigmoid_layer = HiddenLayer(input=layer_input,
                                         n_in=input_size,
                                         n_out=hidden_layer_sizes[i],
-                                        numpy_rng=numpy_rng,
+                                        rng=rng,
                                         activation=sigmoid)
             self.sigmoid_layers.append(sigmoid_layer)
 
@@ -152,7 +137,7 @@ def test_SdA(pretrain_lr=0.1, pretraining_epochs=1000, corruption_level=0.3, \
 
     # construct SdA
     sda = SdA(input=x, label=y, \
-              n_ins=20, hidden_layer_sizes=[15, 15], n_outs=2, numpy_rng=rng)
+              n_ins=20, hidden_layer_sizes=[15, 15], n_outs=2, rng=rng)
 
     # pre-training
     sda.pretrain(lr=pretrain_lr, corruption_level=corruption_level, epochs=pretraining_epochs)

@@ -1,22 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""
- Denoising Autoencoders (dA)
-
- References :
-   - P. Vincent, H. Larochelle, Y. Bengio, P.A. Manzagol: Extracting and
-   Composing Robust Features with Denoising Autoencoders, ICML'08, 1096-1103,
-   2008
-
-   - DeepLearningTutorials
-   https://github.com/lisa-lab/DeepLearningTutorials
-
-   - Yusuke Sugomori: Stochastic Gradient Descent for Denoising Autoencoders,
-   http://yusugomori.com/docs/SGD_DA.pdf
-
-"""
-
 
 import sys
 import numpy
@@ -25,22 +7,20 @@ from utils import *
 
 class dA(object):
     def __init__(self, input=None, n_visible=2, n_hidden=3, \
-        W=None, hbias=None, vbias=None, numpy_rng=None):
+        W=None, hbias=None, vbias=None, rng=None):
 
         self.n_visible = n_visible  # num of units in visible (input) layer
         self.n_hidden = n_hidden    # num of units in hidden layer
 
-        if numpy_rng is None:
-            numpy_rng = numpy.random.RandomState(1234)
+        if rng is None:
+            rng = numpy.random.RandomState(1234)
             
         if W is None:
             a = 1. / n_visible
-            initial_W = numpy.array(numpy_rng.uniform(  # initialize W uniformly
+            W = numpy.array(rng.uniform(  # initialize W uniformly
                 low=-a,
                 high=a,
                 size=(n_visible, n_hidden)))
-
-            W = initial_W
 
         if hbias is None:
             hbias = numpy.zeros(n_hidden)  # initialize h bias 0
@@ -48,21 +28,18 @@ class dA(object):
         if vbias is None:
             vbias = numpy.zeros(n_visible)  # initialize v bias 0
 
-        self.numpy_rng = numpy_rng
+        self.rng = rng
         self.x = input
         self.W = W
         self.W_prime = self.W.T
         self.hbias = hbias
         self.vbias = vbias
 
-        # self.params = [self.W, self.hbias, self.vbias]
-
-
         
     def get_corrupted_input(self, input, corruption_level):
         assert corruption_level < 1
 
-        return self.numpy_rng.binomial(size=input.shape,
+        return self.rng.binomial(size=input.shape,
                                        n=1,
                                        p=1-corruption_level) * input
 
@@ -133,7 +110,7 @@ def test_dA(learning_rate=0.1, corruption_level=0.3, training_epochs=50):
     rng = numpy.random.RandomState(123)
 
     # construct dA
-    da = dA(input=data, n_visible=20, n_hidden=5, numpy_rng=rng)
+    da = dA(input=data, n_visible=20, n_hidden=5, rng=rng)
 
     # train
     for epoch in xrange(training_epochs):

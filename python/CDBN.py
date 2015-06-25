@@ -1,15 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-'''
- DBN  w/ continuous-valued inputs (Linear Energy)
-
- References :
-   - Y. Bengio, P. Lamblin, D. Popovici, H. Larochelle: Greedy Layer-Wise
-   Training of Deep Networks, Advances in Neural Information Processing
-   Systems 19, 2007
-
-'''
 
 import sys
 import numpy
@@ -20,13 +9,11 @@ from CRBM import CRBM
 from DBN import DBN
 from utils import *
 
-
-
  
 class CDBN(DBN):
     def __init__(self, input=None, label=None,\
                  n_ins=2, hidden_layer_sizes=[3, 3], n_outs=2,\
-                 numpy_rng=None):
+                 rng=None):
         
         self.x = input
         self.y = label
@@ -35,8 +22,8 @@ class CDBN(DBN):
         self.rbm_layers = []
         self.n_layers = len(hidden_layer_sizes)  # = len(self.rbm_layers)
 
-        if numpy_rng is None:
-            numpy_rng = numpy.random.RandomState(1234)
+        if rng is None:
+            rng = numpy.random.RandomState(1234)
 
         
         assert self.n_layers > 0
@@ -60,7 +47,7 @@ class CDBN(DBN):
             sigmoid_layer = HiddenLayer(input=layer_input,
                                         n_in=input_size,
                                         n_out=hidden_layer_sizes[i],
-                                        numpy_rng=numpy_rng,
+                                        rng=rng,
                                         activation=sigmoid)
             self.sigmoid_layers.append(sigmoid_layer)
 
@@ -113,7 +100,7 @@ def test_cdbn(pretrain_lr=0.1, pretraining_epochs=1000, k=1, \
     rng = numpy.random.RandomState(123)
 
     # construct DBN
-    dbn = CDBN(input=x, label=y, n_ins=6, hidden_layer_sizes=[5, 5], n_outs=2, numpy_rng=rng)
+    dbn = CDBN(input=x, label=y, n_ins=6, hidden_layer_sizes=[5, 5], n_outs=2, rng=rng)
 
     # pre-training (TrainUnsupervisedDBN)
     dbn.pretrain(lr=pretrain_lr, k=1, epochs=pretraining_epochs)

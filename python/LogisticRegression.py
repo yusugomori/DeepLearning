@@ -1,17 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-'''
- Logistic Regression
- 
- References :
-   - Jason Rennie: Logistic Regression,
-   http://qwone.com/~jason/writing/lr.pdf
- 
-   - DeepLearningTutorials
-   https://github.com/lisa-lab/DeepLearningTutorials
-
-'''
 
 import sys
 import numpy
@@ -25,7 +12,6 @@ class LogisticRegression(object):
         self.W = numpy.zeros((n_in, n_out))  # initialize W 0
         self.b = numpy.zeros(n_out)          # initialize bias 0
 
-        # self.params = [self.W, self.b]
 
     def train(self, lr=0.1, input=None, L2_reg=0.00):
         if input is not None:
@@ -37,6 +23,8 @@ class LogisticRegression(object):
         
         self.W += lr * numpy.dot(self.x.T, d_y) - lr * L2_reg * self.W
         self.b += lr * numpy.mean(d_y, axis=0)
+
+        self.d_y = d_y
         
         # cost = self.negative_log_likelihood()
         # return cost
@@ -56,6 +44,9 @@ class LogisticRegression(object):
     def predict(self, x):
         # return sigmoid(numpy.dot(x, self.W) + self.b)
         return softmax(numpy.dot(x, self.W) + self.b)
+
+    def output(self, x):
+        return self.predict(x)
 
 
 def test_lr(learning_rate=0.01, n_epochs=200):
@@ -90,7 +81,7 @@ def test_lr(learning_rate=0.01, n_epochs=200):
                      [0, 0, 0, 1, 1, 0],
                      [1, 1, 1, 1, 1, 0]])
 
-    print >> sys.stderr, classifier.predict(x)
+    print classifier.predict(x)
 
 
 if __name__ == "__main__":

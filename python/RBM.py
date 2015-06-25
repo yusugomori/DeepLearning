@@ -1,19 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""
- Restricted Boltzmann Machine (RBM)
-
- References :
-   - Y. Bengio, P. Lamblin, D. Popovici, H. Larochelle: Greedy Layer-Wise
-   Training of Deep Networks, Advances in Neural Information Processing
-   Systems 19, 2007
-
-
-   - DeepLearningTutorials
-   https://github.com/lisa-lab/DeepLearningTutorials
-
-"""
 
 import sys
 import numpy
@@ -21,18 +6,18 @@ from utils import *
 
 class RBM(object):
     def __init__(self, input=None, n_visible=2, n_hidden=3, \
-        W=None, hbias=None, vbias=None, numpy_rng=None):
+        W=None, hbias=None, vbias=None, rng=None):
         
         self.n_visible = n_visible  # num of units in visible (input) layer
         self.n_hidden = n_hidden    # num of units in hidden layer
 
-        if numpy_rng is None:
-            numpy_rng = numpy.random.RandomState(1234)
+        if rng is None:
+            rng = numpy.random.RandomState(1234)
 
 
         if W is None:
             a = 1. / n_visible
-            initial_W = numpy.array(numpy_rng.uniform(  # initialize W uniformly
+            initial_W = numpy.array(rng.uniform(  # initialize W uniformly
                 low=-a,
                 high=a,
                 size=(n_visible, n_hidden)))
@@ -46,13 +31,11 @@ class RBM(object):
             vbias = numpy.zeros(n_visible)  # initialize v bias 0
 
 
-        self.numpy_rng = numpy_rng
+        self.rng = rng
         self.input = input
         self.W = W
         self.hbias = hbias
         self.vbias = vbias
-
-        # self.params = [self.W, self.hbias, self.vbias]
 
 
     def contrastive_divergence(self, lr=0.1, k=1, input=None):
@@ -86,7 +69,7 @@ class RBM(object):
 
     def sample_h_given_v(self, v0_sample):
         h1_mean = self.propup(v0_sample)
-        h1_sample = self.numpy_rng.binomial(size=h1_mean.shape,   # discrete: binomial
+        h1_sample = self.rng.binomial(size=h1_mean.shape,   # discrete: binomial
                                        n=1,
                                        p=h1_mean)
 
@@ -95,7 +78,7 @@ class RBM(object):
 
     def sample_v_given_h(self, h0_sample):
         v1_mean = self.propdown(h0_sample)
-        v1_sample = self.numpy_rng.binomial(size=v1_mean.shape,   # discrete: binomial
+        v1_sample = self.rng.binomial(size=v1_mean.shape,   # discrete: binomial
                                             n=1,
                                             p=v1_mean)
         
@@ -153,7 +136,7 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     rng = numpy.random.RandomState(123)
 
     # construct RBM
-    rbm = RBM(input=data, n_visible=6, n_hidden=2, numpy_rng=rng)
+    rbm = RBM(input=data, n_visible=6, n_hidden=2, rng=rng)
 
     # train
     for epoch in xrange(training_epochs):

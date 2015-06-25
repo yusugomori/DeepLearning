@@ -1,15 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""
- RBM  w/ continuous-valued inputs (Linear Energy)
-
- References :
-   - Y. Bengio, P. Lamblin, D. Popovici, H. Larochelle: Greedy Layer-Wise
-   Training of Deep Networks, Advances in Neural Information Processing
-   Systems 19, 2007
-
-"""
 
 import sys
 import numpy
@@ -30,7 +19,7 @@ class CRBM(RBM):
         ep = numpy.exp(a_h)
 
         v1_mean = 1 / (1 - en) - 1 / a_h
-        U = numpy.array(self.numpy_rng.uniform(
+        U = numpy.array(self.rng.uniform(
             low=0,
             high=1,
             size=v1_mean.shape))
@@ -53,7 +42,7 @@ def test_crbm(learning_rate=0.1, k=1, training_epochs=1000):
     rng = numpy.random.RandomState(123)
 
     # construct CRBM
-    rbm = CRBM(input=data, n_visible=6, n_hidden=5, numpy_rng=rng)
+    rbm = CRBM(input=data, n_visible=6, n_hidden=5, rng=rng)
 
     # train
     for epoch in xrange(training_epochs):

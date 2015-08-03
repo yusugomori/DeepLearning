@@ -21,7 +21,7 @@ class MLP(object):
                                         n_in=n_in,
                                         n_out=n_hidden,
                                         rng=rng,
-                                        activation=numpy.tanh)
+                                        activation=tanh)
 
         # construct log_layer (softmax)
         self.log_layer = LogisticRegression(input=self.hidden_layer.output,
@@ -36,7 +36,7 @@ class MLP(object):
         
 
     def predict(self, x):
-        x = self.hidden_layer.output(x)
+        x = self.hidden_layer.output(input=x)
         return self.log_layer.predict(x)
 
 

@@ -7,7 +7,7 @@ from utils import *
 
 class HiddenLayer(object):
     def __init__(self, input, n_in, n_out,\
-                 W=None, b=None, rng=None, activation=numpy.tanh):
+                 W=None, b=None, rng=None, activation=tanh):
         
         if rng is None:
             rng = numpy.random.RandomState(1234)
@@ -24,15 +24,22 @@ class HiddenLayer(object):
 
         self.rng = rng
         self.x = input
+
         self.W = W
         self.b = b
 
-        if activation == numpy.tanh:
+        if activation == tanh:
             self.dactivation = dtanh
+
         elif activation == sigmoid:
             self.dactivation = dsigmoid
+
+        elif activation == ReLU:
+            self.dactivation = dReLU
+
         else:
             raise ValueError('activation function not supported.')
+
         
         self.activation = activation
         
@@ -68,10 +75,23 @@ class HiddenLayer(object):
         if input is not None:
             self.x = input
 
-        # d_y = (1 - prev_layer.x * prev_layer.x) * numpy.dot(prev_layer.d_y, prev_layer.W.T)
         d_y = self.dactivation(prev_layer.x) * numpy.dot(prev_layer.d_y, prev_layer.W.T)
 
         self.W += lr * numpy.dot(self.x.T, d_y)
         self.b += lr * numpy.mean(d_y, axis=0)
 
         self.d_y = d_y
+
+
+    def dropout(self, input, p, rng=None):
+        if rng is None:
+            rng = numpy.random.RandomState(123)
+
+        mask = rng.binomial(size=input.shape,
+                            n=1,
+                            p=1-p)  # p is the prob of dropping
+
+        return mask
+                     
+
+

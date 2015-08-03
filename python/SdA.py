@@ -103,8 +103,8 @@ class SdA(object):
             sigmoid_layer = self.sigmoid_layers[i]
             layer_input = sigmoid_layer.output(input=layer_input)
 
-        out = self.log_layer.predict(layer_input)
-        return out
+        return self.log_layer.predict(layer_input)
+
 
 
 

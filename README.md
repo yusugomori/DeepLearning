@@ -17,6 +17,10 @@
   - LogisticRegression: Logistic Regression
 
   - HiddenLayer: Hidden Layer of Neural Networks
+  
+  - MLP: Multiple Layer Perceptron
+
+  - Dropout: Dropout MLP
 
 
 

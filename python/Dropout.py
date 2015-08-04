@@ -98,8 +98,7 @@ class Dropout(object):
 
         for i in xrange(self.n_layers):
             if dropout == True:
-                self.hidden_layers[i].W = p_dropout * self.hidden_layers[i].W
-                self.hidden_layers[i].b = p_dropout * self.hidden_layers[i].b
+                self.hidden_layers[i].W = (1 - p_dropout) * self.hidden_layers[i].W
             
             layer_input = self.hidden_layers[i].output(input=layer_input)
 

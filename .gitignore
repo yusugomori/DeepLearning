@@ -8,3 +8,7 @@
 *.settings
 .project
 .metadata
+
+java/.idea/*
+java/java.iml
+java/out/*

@@ -58,7 +58,7 @@ class RBM(object):
         # chain_end = nv_samples
 
 
-        self.W += lr * (numpy.dot(self.input.T, ph_sample)
+        self.W += lr * (numpy.dot(self.input.T, ph_mean)
                         - numpy.dot(nv_samples.T, nh_means))
         self.vbias += lr * numpy.mean(self.input - nv_samples, axis=0)
         self.hbias += lr * numpy.mean(ph_sample - nh_means, axis=0)

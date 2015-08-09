@@ -50,11 +50,11 @@ class Dropout(object):
             self.hidden_layers.append(hidden_layer)
 
 
-            # layer for ouput using Logistic Regression (softmax)
-            self.log_layer = LogisticRegression(input=self.hidden_layers[-1].output(),
-                                                label=self.y,
-                                                n_in=hidden_layer_sizes[-1],
-                                                n_out=n_out)
+        # layer for ouput using Logistic Regression (softmax)
+        self.log_layer = LogisticRegression(input=self.hidden_layers[-1].output(),
+                                            label=self.y,
+                                            n_in=hidden_layer_sizes[-1],
+                                            n_out=n_out)
 
 
     def train(self, epochs=500, dropout=True, p_dropout=0.5, rng=None):
@@ -108,27 +108,16 @@ class Dropout(object):
 
 def test_dropout(n_epochs=500, dropout=True, p_dropout=0.5):
 
-    x = numpy.array([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0]])
+    x = numpy.array([[-1, -1],
+                     [-1,  1],
+                     [ 1, -1],
+                     [ 1,  1]])
 
-    y = numpy.array([[1, 0],
-                     [1, 0],
-                     [1, 0],
-                     [1, 0],
-                     [1, 0],
-                     [0, 1],
-                     [0, 1],
-                     [0, 1],
-                     [0, 1],
-                     [0, 1]])
+
+    y = numpy.array([[1, -1],
+                     [1, -1],
+                     [-1, 1],
+                     [-1, 1]])
 
 
     rng = numpy.random.RandomState(123)
@@ -136,20 +125,20 @@ def test_dropout(n_epochs=500, dropout=True, p_dropout=0.5):
 
     # construct Dropout MLP
     classifier = Dropout(input=x, label=y, \
-                         n_in=20, hidden_layer_sizes=[12, 12], n_out=2, \
+                         n_in=2, hidden_layer_sizes=[3], n_out=2, \
                          rng=rng, activation=ReLU)
 
 
-    # train
+    # train XOR
     classifier.train(epochs=n_epochs, dropout=dropout, \
                      p_dropout=p_dropout, rng=rng)
 
 
     # test
-    x = numpy.array([[1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1]])
+    x = numpy.array([[-1, -1],
+                     [-1,  1],
+                     [ 1, -1],
+                     [ 1,  1]])
 
     print classifier.predict(x)
 

@@ -9,25 +9,36 @@ class LogisticRegression(object):
     def __init__(self, input, label, n_in, n_out):
         self.x = input
         self.y = label
+
         self.W = numpy.zeros((n_in, n_out))  # initialize W 0
-        self.b = numpy.zeros(n_out)          # initialize bias 0
+        self.b = numpy.zeros(n_out)  # initialize bias 0
 
 
     def train(self, lr=0.1, input=None, L2_reg=0.00):
+        self.forward(input)
+        self.backward(lr, L2_reg)
+
+
+    def forward(self, input=None):
         if input is not None:
             self.x = input
 
-        # p_y_given_x = sigmoid(numpy.dot(self.x, self.W) + self.b)
-        p_y_given_x = softmax(numpy.dot(self.x, self.W) + self.b)
-        d_y = self.y - p_y_given_x
-        
-        self.W += lr * numpy.dot(self.x.T, d_y) - lr * L2_reg * self.W
-        self.b += lr * numpy.mean(d_y, axis=0)
+        p_y_given_x = self.output(self.x)
+        self.d_y = self.y - p_y_given_x
 
-        self.d_y = d_y
         
-        # cost = self.negative_log_likelihood()
-        # return cost
+    def backward(self, lr, L2_reg=0.00):
+        self.W += lr * numpy.dot(self.x.T, self.d_y) - lr * L2_reg * self.W
+        self.b += lr * numpy.mean(self.d_y, axis=0)
+
+
+    def output(self, x):
+        # return sigmoid(numpy.dot(x, self.W) + self.b)
+        return softmax(numpy.dot(x, self.W) + self.b)
+
+    def predict(self, x):
+        return self.output(x)
+
 
     def negative_log_likelihood(self):
         # sigmoid_activation = sigmoid(numpy.dot(self.x, self.W) + self.b)
@@ -41,47 +52,41 @@ class LogisticRegression(object):
         return cross_entropy
 
 
-    def predict(self, x):
-        # return sigmoid(numpy.dot(x, self.W) + self.b)
-        return softmax(numpy.dot(x, self.W) + self.b)
+def test_lr(learning_rate=0.1, n_epochs=500):
 
-    def output(self, x):
-        return self.predict(x)
+    rng = numpy.random.RandomState(123)
 
-
-def test_lr(learning_rate=0.01, n_epochs=200):
     # training data
-    x = numpy.array([[1,1,1,0,0,0],
-                     [1,0,1,0,0,0],
-                     [1,1,1,0,0,0],
-                     [0,0,1,1,1,0],
-                     [0,0,1,1,0,0],
-                     [0,0,1,1,1,0]])
-    y = numpy.array([[1, 0],
-                     [1, 0],
-                     [1, 0],
-                     [0, 1],
-                     [0, 1],
-                     [0, 1]])
+    d = 2
+    N = 10
+    x1 = rng.randn(N, d) + numpy.array([0, 0])
+    x2 = rng.randn(N, d) + numpy.array([20, 10])
+    y1 = [[1, 0] for i in xrange(N)]
+    y2 = [[0, 1] for i in xrange(N)]
+
+    x = numpy.r_[x1.astype(int), x2.astype(int)]
+    y = numpy.r_[y1, y2]
 
 
     # construct LogisticRegression
-    classifier = LogisticRegression(input=x, label=y, n_in=6, n_out=2)
+    classifier = LogisticRegression(input=x, label=y, n_in=d, n_out=2)
 
     # train
     for epoch in xrange(n_epochs):
         classifier.train(lr=learning_rate)
         # cost = classifier.negative_log_likelihood()
         # print >> sys.stderr, 'Training epoch %d, cost is ' % epoch, cost
-        learning_rate *= 0.95
+        learning_rate *= 0.995
 
 
     # test
-    x = numpy.array([[1, 1, 0, 0, 0, 0],
-                     [0, 0, 0, 1, 1, 0],
-                     [1, 1, 1, 1, 1, 0]])
+    result = classifier.predict(x)
+    for i in xrange(N):
+        print result[i]
+    print
+    for i in xrange(N):
+        print result[N+i]
 
-    print classifier.predict(x)
 
 
 if __name__ == "__main__":

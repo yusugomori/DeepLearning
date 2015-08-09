@@ -51,21 +51,7 @@ class HiddenLayer(object):
         
         linear_output = numpy.dot(self.x, self.W) + self.b
 
-        return (linear_output if self.activation is None
-                else self.activation(linear_output))
-
-
-    def sample_h_given_v(self, input=None):
-        if input is not None:
-            self.x = input
-
-        v_mean = self.output()
-        h_sample = self.rng.binomial(size=v_mean.shape,
-                                           n=1,
-                                           p=v_mean)
-        return h_sample
-
-
+        return self.activation(linear_output)
 
     def forward(self, input=None):
         return self.output(input=input)
@@ -75,11 +61,10 @@ class HiddenLayer(object):
         if input is not None:
             self.x = input
 
-        d_y = self.dactivation(prev_layer.x) * numpy.dot(prev_layer.d_y, prev_layer.W.T)
+        d_y = self.dactivation( prev_layer.x ) * numpy.dot( prev_layer.d_y, prev_layer.W.T )
 
         self.W += lr * numpy.dot(self.x.T, d_y)
         self.b += lr * numpy.mean(d_y, axis=0)
-
         self.d_y = d_y
 
 
@@ -93,5 +78,15 @@ class HiddenLayer(object):
 
         return mask
                      
+
+    def sample_h_given_v(self, input=None):
+        if input is not None:
+            self.x = input
+
+        v_mean = self.output()
+        h_sample = self.rng.binomial(size=v_mean.shape,
+                                           n=1,
+                                           p=v_mean)
+        return h_sample
 
 

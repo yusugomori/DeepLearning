@@ -14,22 +14,32 @@ class LogisticRegression(object):
         self.b = numpy.zeros(n_out)  # initialize bias 0
 
 
-    def train(self, lr=0.1, input=None, L2_reg=0.00):
-        self.forward(input)
-        self.backward(lr, L2_reg)
-
-
-    def forward(self, input=None):
+    def train(self, lr=0.1, input=None, L2_reg=0.00):        
         if input is not None:
             self.x = input
 
         p_y_given_x = self.output(self.x)
-        self.d_y = self.y - p_y_given_x
+        d_y = self.y - p_y_given_x
 
+        self.W += lr * numpy.dot(self.x.T, d_y) - lr * L2_reg * self.W
+        self.b += lr * numpy.mean(d_y, axis=0)
+        self.d_y = d_y
         
-    def backward(self, lr, L2_reg=0.00):
-        self.W += lr * numpy.dot(self.x.T, self.d_y) - lr * L2_reg * self.W
-        self.b += lr * numpy.mean(self.d_y, axis=0)
+
+    # def train(self, lr=0.1, input=None, L2_reg=0.00):
+    #     self.forward(input)
+    #     self.backward(lr, L2_reg)
+
+    # def forward(self, input=None):
+    #     if input is not None:
+    #         self.x = input
+
+    #     p_y_given_x = self.output(self.x)
+    #     self.d_y = self.y - p_y_given_x
+        
+    # def backward(self, lr=0.1, L2_reg=0.00):
+    #     self.W += lr * numpy.dot(self.x.T, self.d_y) - lr * L2_reg * self.W
+    #     self.b += lr * numpy.mean(self.d_y, axis=0)
 
 
     def output(self, x):

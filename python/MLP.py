@@ -21,7 +21,7 @@ class MLP(object):
                                         n_in=n_in,
                                         n_out=n_hidden,
                                         rng=rng,
-                                        activation=sigmoid)
+                                        activation=tanh)
 
         # construct log_layer
         self.log_layer = LogisticRegression(input=self.hidden_layer.output,
@@ -31,17 +31,17 @@ class MLP(object):
 
     def train(self):
         # forward hidden_layer
-        log_layer_input = self.hidden_layer.forward(input=self.x)
+        layer_input = self.hidden_layer.forward()
 
-        # forward log_layer
-        self.log_layer.forward(input=log_layer_input)
+        # forward & backward log_layer
+        # self.log_layer.forward(input=layer_input)
+        self.log_layer.train(input=layer_input)
 
         # backward hidden_layer
-        self.hidden_layer.backward(prev_layer=self.log_layer, lr=0.2, input=self.x)
+        self.hidden_layer.backward(prev_layer=self.log_layer)
 
         # backward log_layer
-        self.log_layer.backward(lr=0.2)
-
+        # self.log_layer.backward()
 
 
     def predict(self, x):

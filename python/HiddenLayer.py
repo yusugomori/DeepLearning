@@ -50,8 +50,8 @@ class HiddenLayer(object):
             self.x = input
         
         linear_output = numpy.dot(self.x, self.W) + self.b
-
         return self.activation(linear_output)
+
 
     def forward(self, input=None):
         return self.output(input=input)
@@ -61,7 +61,7 @@ class HiddenLayer(object):
         if input is not None:
             self.x = input
 
-        d_y = self.dactivation( prev_layer.x ) * numpy.dot( prev_layer.d_y, prev_layer.W.T )
+        d_y = self.dactivation(prev_layer.x) * numpy.dot(prev_layer.d_y, prev_layer.W.T)
 
         self.W += lr * numpy.dot(self.x.T, d_y)
         self.b += lr * numpy.mean(d_y, axis=0)

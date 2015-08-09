@@ -57,7 +57,7 @@ class Dropout(object):
                                             n_out=n_out)
 
 
-    def train(self, epochs=500, dropout=True, p_dropout=0.5, rng=None):
+    def train(self, epochs=5000, dropout=True, p_dropout=0.5, rng=None):
 
         for epoch in xrange(epochs):
             dropout_masks = []  # create different masks in each training epoch
@@ -106,26 +106,24 @@ class Dropout(object):
 
 
 
-def test_dropout(n_epochs=500, dropout=True, p_dropout=0.5):
+def test_dropout(n_epochs=5000, dropout=True, p_dropout=0.5):
 
-    x = numpy.array([[-1, -1],
-                     [-1,  1],
-                     [ 1, -1],
-                     [ 1,  1]])
+    x = numpy.array([[0,  0],
+                     [0,  1],
+                     [1,  0],
+                     [1,  1]])
 
-
-    y = numpy.array([[1, -1],
-                     [1, -1],
-                     [-1, 1],
-                     [-1, 1]])
-
+    y = numpy.array([[0, 1],
+                     [1, 0],
+                     [1, 0],
+                     [0, 1]])
 
     rng = numpy.random.RandomState(123)
 
 
     # construct Dropout MLP
     classifier = Dropout(input=x, label=y, \
-                         n_in=2, hidden_layer_sizes=[3], n_out=2, \
+                         n_in=2, hidden_layer_sizes=[10, 10], n_out=2, \
                          rng=rng, activation=ReLU)
 
 
@@ -135,11 +133,6 @@ def test_dropout(n_epochs=500, dropout=True, p_dropout=0.5):
 
 
     # test
-    x = numpy.array([[-1, -1],
-                     [-1,  1],
-                     [ 1, -1],
-                     [ 1,  1]])
-
     print classifier.predict(x)
 
 

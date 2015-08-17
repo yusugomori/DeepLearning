@@ -41,5 +41,10 @@
   http://yusugomori.com/docs/SGD_DA.pdf
 
 
+### Other projects : 
+  -  [DeepLearning.coffee](https://github.com/yusugomori/deeplearning.coffee) : Very simple implementation of deep learning by CoffeeScript
+　  
+　  
+  
+#### Bug reports are deeply welcome.
 
-### Bug reports are deeply welcome.

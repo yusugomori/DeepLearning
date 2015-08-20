@@ -42,7 +42,7 @@
 
 
 ### Other projects : 
-  -  My deep learning projects are [here](http://yusugomori.com/projects/deep-learning/)
+  -  My deep learning projects are [here](http://yusugomori.com/projects/deep-learning/).
 　  
 　  
   

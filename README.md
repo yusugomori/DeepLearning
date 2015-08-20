@@ -42,9 +42,10 @@
 
 
 ### Other projects : 
-  -  [DeepLearning.coffee](https://github.com/yusugomori/deeplearning.coffee) : Very simple implementation of deep learning by CoffeeScript
+  -  My deep learning projects are [here](http://yusugomori.com/projects/deep-learning/)
 　  
 　  
   
-#### Bug reports are deeply welcome.
+##### Bug reports / contributions / donations are deeply welcome.
+Bitcoin wallet address: 1QAoYw5Y3opvah2APf4jVcpD6UAHyC3k7s
 

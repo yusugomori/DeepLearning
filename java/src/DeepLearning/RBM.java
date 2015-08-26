@@ -3,7 +3,6 @@ package DeepLearning;
 import java.util.Random;
 import static DeepLearning.utils.*;
 
-
 public class RBM {
     public int N;
     public int n_visible;

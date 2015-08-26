@@ -9,9 +9,9 @@ public class SdA {
     public int[] hidden_layer_sizes;
     public int n_outs;
     public int n_layers;
-    public HiddenLayer[] sigmoid_layers;
+    public HiddenLayerDiscrete[] sigmoid_layers;
     public dA[] dA_layers;
-    public LogisticRegression log_layer;
+    public LogisticRegressionDiscrete log_layer;
     public Random rng;
 
 
@@ -24,7 +24,7 @@ public class SdA {
         this.n_outs = n_outs;
         this.n_layers = n_layers;
 
-        this.sigmoid_layers = new HiddenLayer[n_layers];
+        this.sigmoid_layers = new HiddenLayerDiscrete[n_layers];
         this.dA_layers = new dA[n_layers];
 
         if(rng == null)	this.rng = new Random(1234);
@@ -39,14 +39,14 @@ public class SdA {
             }
 
             // construct sigmoid_layer
-            this.sigmoid_layers[i] = new HiddenLayer(this.N, input_size, this.hidden_layer_sizes[i], null, null, rng);
+            this.sigmoid_layers[i] = new HiddenLayerDiscrete(this.N, input_size, this.hidden_layer_sizes[i], null, null, rng);
 
             // construct dA_layer
             this.dA_layers[i] = new dA(this.N, input_size, this.hidden_layer_sizes[i], this.sigmoid_layers[i].W, this.sigmoid_layers[i].b, null, rng);
         }
 
-        // layer for output using DNN.LogisticRegression
-        this.log_layer = new LogisticRegression(this.N, this.hidden_layer_sizes[this.n_layers-1], this.n_outs);
+        // layer for output using Logistic Regression
+        this.log_layer = new LogisticRegressionDiscrete(this.N, this.hidden_layer_sizes[this.n_layers-1], this.n_outs);
     }
 
     public void pretrain(int[][] train_X, double lr, double corruption_level, int epochs) {

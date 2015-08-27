@@ -1,4 +1,4 @@
-##  Deep Learning (Python, C/C++, Java, Scala, Go)
+##  Deep Learning (Python, C, C++, Java, Scala, Go)
 
 ### Classes :
 

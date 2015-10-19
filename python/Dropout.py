@@ -87,10 +87,11 @@ class Dropout(object):
                 else:
                     prev_layer = self.hidden_layers[i+1]
 
-                self.hidden_layers[i].backward(prev_layer=prev_layer)
-                
                 if dropout == True:
-                    self.hidden_layers[i].d_y *= dropout_masks[i]  # also mask here
+                    self.hidden_layers[i].backward(prev_layer=prev_layer, dropout=True, mask=dropout_masks[i])
+                else:
+                    self.hidden_layers[i].backward(prev_layer=prev_layer)
+                
 
 
     def predict(self, x, dropout=True, p_dropout=0.5):

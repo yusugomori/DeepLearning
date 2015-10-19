@@ -57,11 +57,14 @@ class HiddenLayer(object):
         return self.output(input=input)
 
 
-    def backward(self, prev_layer, lr=0.1, input=None):
+    def backward(self, prev_layer, lr=0.1, input=None, dropout=False, mask=None):
         if input is not None:
             self.x = input
 
         d_y = self.dactivation(prev_layer.x) * numpy.dot(prev_layer.d_y, prev_layer.W.T)
+
+        if dropout == True:
+            d_y *= mask
 
         self.W += lr * numpy.dot(self.x.T, d_y)
         self.b += lr * numpy.mean(d_y, axis=0)

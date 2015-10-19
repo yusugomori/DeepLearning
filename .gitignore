@@ -12,3 +12,6 @@
 java/.idea/*
 java/java.iml
 java/out/*
+
+data/*
+!data/.gitkeep

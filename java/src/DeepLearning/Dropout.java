@@ -103,14 +103,14 @@ public class Dropout {
                         prev_W = hiddenLayers[i+1].W;
                     }
 
-                    dy = new double[hidden_layer_sizes[i]];
-                    hiddenLayers[i].backward(layer_inputs.get(i), dy, layer_inputs.get(i+1), prev_dy, prev_W, lr);
-
                     if(dropout) {
-                        for(int j=0; j<dy.length; j++) {
-                            dy[j] *= dropout_masks.get(i)[j];
+                        for(int j=0; j<prev_dy.length; j++) {
+                            prev_dy[j] *= dropout_masks.get(i)[j];
                         }
                     }
+
+                    dy = new double[hidden_layer_sizes[i]];
+                    hiddenLayers[i].backward(layer_inputs.get(i), dy, layer_inputs.get(i+1), prev_dy, prev_W, lr);
                 }
 
             }

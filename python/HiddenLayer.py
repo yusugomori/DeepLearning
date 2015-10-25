@@ -66,8 +66,8 @@ class HiddenLayer(object):
         if dropout == True:
             d_y *= mask
 
-        self.W += lr * numpy.dot(self.x.T, d_y)
-        self.b += lr * numpy.mean(d_y, axis=0)
+        self.W -= lr * numpy.dot(self.x.T, d_y) / len(self.x)
+        self.b -= lr * numpy.mean(d_y, axis=0) / len(self.x)
         self.d_y = d_y
 
 

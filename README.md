@@ -22,6 +22,10 @@
 
   - Dropout: Dropout MLP
 
+  - ConvPoolLayer: Convoluton & MaxPooling
+
+  - CNN: Convolutional Neural Networks (development)
+
 
 
 ### References :

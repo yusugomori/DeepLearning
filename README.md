@@ -24,7 +24,7 @@
 
   - ConvPoolLayer: Convoluton & MaxPooling
 
-  - CNN: Convolutional Neural Networks (development)
+  - CNN: Convolutional Neural Networks
 
 
 

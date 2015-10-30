@@ -22,6 +22,8 @@
 
   - Dropout: Dropout MLP
 
+  - CNN: Convolutional Neural Networks (See [dev branch](https://github.com/yusugomori/DeepLearning/tree/dev).)
+
 
 
 ### References :

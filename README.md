@@ -42,6 +42,10 @@
   - Yusuke Sugomori: Stochastic Gradient Descent for Denoising Autoencoders,
   http://yusugomori.com/docs/SGD_DA.pdf
 
+### Publication :
+  - More cleaner Java implementations are introduced in my book, Deep Learning with Java.
+
+    The book is now available to pre-order from [Packt Publishing](https://www.packtpub.com/big-data-and-business-intelligence/deep-learning-java) or [Amazon](http://www.amazon.com/Deep-Learning-Java-Yusuke-Sugomori/dp/1785282190/).
 
 ### Other projects : 
   -  My deep learning projects are [here](http://yusugomori.com/projects/deep-learning/).

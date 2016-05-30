@@ -43,9 +43,9 @@
   http://yusugomori.com/docs/SGD_DA.pdf
 
 ### Publication :
-  - More detailed Java implementations are introduced in my book, Deep Learning with Java.
+  - More detailed Java implementations are introduced in my book, Java Deep Learning Essentials.
 
-    The book is now available to pre-order from [Packt Publishing](https://www.packtpub.com/big-data-and-business-intelligence/deep-learning-java) or [Amazon](http://www.amazon.com/Deep-Learning-Java-Yusuke-Sugomori/dp/1785282190/).
+    The book is available from [Packt Publishing](https://www.packtpub.com/big-data-and-business-intelligence/java-deep-learning-essentials) or [Amazon](http://www.amazon.com/Deep-Learning-Java-Yusuke-Sugomori/dp/1785282190/).
 
 ### Other projects : 
   -  My deep learning projects are [here](http://yusugomori.com/projects/deep-learning/).

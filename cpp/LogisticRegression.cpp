@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include <stdlib.h>
 #include "LogisticRegression.h"
 using namespace std;
 

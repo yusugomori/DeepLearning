@@ -11,7 +11,6 @@ class MLP(object):
     def __init__(self, input, label, n_in, n_hidden, n_out, rng=None):
         """
         n_hidden: python list represent the hidden dimention 
-        activation: activation function
         """
 
         self.x = input

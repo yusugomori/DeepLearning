@@ -9,6 +9,10 @@ from utils import *
 
 class MLP(object):
     def __init__(self, input, label, n_in, n_hidden, n_out, rng=None):
+        """
+        n_hidden: python list represent the hidden dimention 
+        activation: activation function
+        """
 
         self.x = input
         self.y = label
@@ -17,35 +21,50 @@ class MLP(object):
             rng = numpy.random.RandomState(1234)
 
         # construct hidden_layer
-        self.hidden_layer = HiddenLayer(input=self.x,
-                                        n_in=n_in,
-                                        n_out=n_hidden,
-                                        rng=rng,
-                                        activation=tanh)
+        layers_dim = numpy.hstack([n_in,n_hidden])
+        self.hidden_layer = []
+
+        for hidden_idx in xrange(len(layers_dim) - 1):
+            self.hidden_layer.append(HiddenLayer(input=self.x, 
+                                                 n_in=layers_dim[hidden_idx], 
+                                                 n_out=layers_dim[hidden_idx+1], 
+                                                 rng=rng,
+                                                 activation=tanh))
 
         # construct log_layer
-        self.log_layer = LogisticRegression(input=self.hidden_layer.output,
+        self.log_layer = LogisticRegression(input=self.hidden_layer[-1].output,
                                             label=self.y,
-                                            n_in=n_hidden,
+                                            n_in=n_hidden[-1],
                                             n_out=n_out)
+
 
     def train(self):
         # forward hidden_layer
-        layer_input = self.hidden_layer.forward()
+        layer_input = self.x
+
+        for hidden_idx in range(len(self.hidden_layer)):
+
+            layer_input = self.hidden_layer[hidden_idx].forward(input=layer_input)
 
         # forward & backward log_layer
-        # self.log_layer.forward(input=layer_input)
         self.log_layer.train(input=layer_input)
 
         # backward hidden_layer
-        self.hidden_layer.backward(prev_layer=self.log_layer)
+        for hidden_idx in range(len(self.hidden_layer))[::-1]:
 
-        # backward log_layer
-        # self.log_layer.backward()
+            if hidden_idx == len(self.hidden_layer) - 1:
+
+                self.hidden_layer[hidden_idx].backward(prev_layer=self.log_layer)
+
+                continue
+
+            self.hidden_layer[hidden_idx].backward(prev_layer=self.hidden_layer[hidden_idx+1])
 
 
     def predict(self, x):
-        x = self.hidden_layer.output(input=x)
+        for hidden_idx in range(len(self.hidden_layer)):
+            x = self.hidden_layer[hidden_idx].output(input=x)
+
         return self.log_layer.predict(x)
 
 
@@ -66,7 +85,7 @@ def test_mlp(n_epochs=5000):
 
 
     # construct MLP
-    classifier = MLP(input=x, label=y, n_in=2, n_hidden=3, n_out=2, rng=rng)
+    classifier = MLP(input=x, label=y, n_in=2, n_hidden=[3,4], n_out=2, rng=rng)
 
     # train
     for epoch in xrange(n_epochs):

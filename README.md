@@ -47,11 +47,7 @@
 
     The book is available from [Packt Publishing](https://www.packtpub.com/big-data-and-business-intelligence/java-deep-learning-essentials) or [Amazon](http://www.amazon.com/Deep-Learning-Java-Yusuke-Sugomori/dp/1785282190/).
 
-### Other projects : 
-  -  My deep learning projects are [here](http://yusugomori.com/projects/deep-learning/).
-　  
-　  
   
 ##### Bug reports / contributions / donations are deeply welcome.
-Bitcoin wallet address: 1QAoYw5Y3opvah2APf4jVcpD6UAHyC3k7s
+Bitcoin wallet address: 34kZarc2uBU6BMCouUp2iudvZtbmZMPqrA
 

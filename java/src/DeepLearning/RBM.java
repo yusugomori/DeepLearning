@@ -75,7 +75,9 @@ public class RBM {
                 // W[i][j] += lr * (ph_sample[i] * input[j] - nh_means[i] * nv_samples[j]) / N;
                 W[i][j] += lr * (ph_mean[i] * input[j] - nh_means[i] * nv_samples[j]) / N;
             }
-            hbias[i] += lr * (ph_sample[i] - nh_means[i]) / N;
+            // hbias[i] += lr * (ph_sample[i] - nh_means[i]) / N;
+            // I think this statement should be replaced with the following. what's your idea?
+            
         }
 
 

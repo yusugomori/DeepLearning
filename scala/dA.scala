@@ -19,7 +19,7 @@ class dA(val N: Int, val n_visible: Int, val n_hidden: Int,
     var i: Int = 0
     var j: Int = 0
 
-    val a: Double = 1 / n_visible
+    val a: Double = 1.0 / n_visible
     for(i <- 0 until n_hidden)
       for(j <- 0 until n_visible)
         W(i)(j) = uniform(-a, a)

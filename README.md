@@ -1,6 +1,6 @@
 ##  Deep Learning (Python, C, C++, Java, Scala, Go)
 
-### Classes :
+### Classes : Deep Learing Classes
 
   - DBN:  Deep Belief Nets
 

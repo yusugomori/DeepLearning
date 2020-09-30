@@ -38,7 +38,7 @@ DBN::DBN(int size, int n_i, int *hls, int n_o, int n_l) {
                             sigmoid_layers[i]->W, sigmoid_layers[i]->b, NULL);
   }
 
-  // layer for output using LogisticRegression
+  // layer for output using LogisticRegression 
   log_layer = new LogisticRegression(N, hidden_layer_sizes[n_layers-1], n_outs);
 }
 

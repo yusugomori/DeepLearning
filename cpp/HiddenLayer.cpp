@@ -1,3 +1,4 @@
+/* **** DEEP LEARNING HiddenLayer.cpp ****   */
 #include <iostream>
 #include <math.h>
 #include "HiddenLayer.h"

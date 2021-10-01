@@ -1,3 +1,4 @@
+/* This is DeepLearning RBM.cpp Project */
 #include <iostream>
 #include <math.h>
 #include "utils.h"
